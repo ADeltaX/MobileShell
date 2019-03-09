@@ -1,0 +1,56 @@
+﻿<Window x:Class="MobileShell.StatusBarWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MobileShell"
+        mc:Ignorable="d"
+        d:DesignWidth="350"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Visibility="Visible"
+        Focusable="False"
+        UseLayoutRounding="True"
+        Topmost="True"
+        Background="#FF000000" 
+        Height="24">
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <Grid Width="24" Margin="8,0,0,0" Height="24" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,0" UnicodeString="&#xE876;" />
+                <!--<Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#7f7f7f" Margin="0,0,0,4" UnicodeString="&#xE870;" />
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,4" UnicodeString="&#xE86E;" />-->
+            </Grid>
+
+            <Grid Width="24" Height="24" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#ffffff" Margin="2,0,0,4" UnicodeString="&#xE701;" />
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,4" UnicodeString="&#xE880;" />
+            </Grid>
+            <Grid Width="24" Height="24" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEC41;" />
+            </Grid>
+            <Grid Width="24" Height="24" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xE877;" />
+            </Grid>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock FontSize="14" Margin="0,0,0,0" Text="76%" Foreground="#ffffff" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Grid Width="36" Height="24" Background="Transparent">
+                <Glyphs x:Name="batteryGlyph" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="24" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEBB5;" />
+            </Grid>
+            <TextBlock x:Name="textBlock_Clock" FontSize="14" Margin="0,0,8,0" Text="12:61" Foreground="#ffffff" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </StackPanel>
+        <TextBlock Text="MobileShell TEST" Foreground="White" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" />
+    </Grid>
+</Window>

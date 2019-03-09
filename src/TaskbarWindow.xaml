@@ -1,0 +1,41 @@
+﻿<Window x:Class="MobileShell.TaskbarWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MobileShell"
+        mc:Ignorable="d"
+        d:DesignWidth="350"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Focusable="False"
+        Visibility="Visible"
+        UseLayoutRounding="True"
+        Topmost="True"
+        Background="Transparent"
+        Height="42">
+    <Grid>
+        <Grid Background="#FF000000" PreviewTouchDown="Grid_PreviewTouchDown" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Stylus.IsPressAndHoldEnabled="False" PreviewTouchDown="Button_PreviewTouchDown" Style="{StaticResource FlatButton}" Width="48" Padding="0" Height="42" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="20" Width="20" HorizontalAlignment="Left" 
+                    FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="" />
+            </Button>
+            <Button Click="WindowsLogo_Click" Style="{StaticResource FlatButton}" Width="48" Padding="0" Height="42" Background="Transparent" Margin="72,0">
+                <Glyphs FontUri="pack://application:,,,/MobileShell;component/Fonts/HOLOMDL2.TTF" Height="20" Width="20" HorizontalAlignment="Left" 
+                    FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="&#xE782;" />
+            </Button>
+            <Button Click="SearchButton_Click" Style="{StaticResource FlatButton}" Width="48" Padding="0" Height="42" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="20" Width="20" HorizontalAlignment="Left" 
+                    FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="&#xE11A;" />
+            </Button>
+        </StackPanel>
+        <!--<Button Style="{StaticResource Flat}" Width="48" Padding="0" Height="42" Background="Transparent" HorizontalAlignment="Right">
+            <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="20" Width="20" HorizontalAlignment="Left" 
+                    FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="&#xE10C;" />
+        </Button>-->
+    </Grid>
+</Window>
