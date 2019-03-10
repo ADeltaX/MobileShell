@@ -1,7 +1,9 @@
 ﻿using MobileShell.Classes;
 using System;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Threading;
+using static MobileShell.Classes.NativeMethods;
 
 namespace MobileShell
 {
@@ -75,6 +77,16 @@ namespace MobileShell
         {
             if (sldr.Value > sldr.Minimum)
                 sldr.Value -= 1;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+
+            int exStyle = (int)GetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE);
+
+            exStyle |= (int)ExtendedWindowStyles.WS_EX_TOOLWINDOW | (int)ExtendedWindowStyles.WS_EX_NOACTIVATE;
+            SetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
         }
     }
 }

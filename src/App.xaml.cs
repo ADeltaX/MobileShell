@@ -1,5 +1,6 @@
 ﻿using MobileShell.Classes;
 using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -28,6 +29,9 @@ namespace MobileShell
             //ShowExplorerTaskbar();
             //return;
 
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             Kbh = new HookEngine();
             Kbh.OnKeyPressed += kbh_OnKeyPressed;
             Kbh.OnKeyUnpressed += kbh_OnKeyUnpressed;
@@ -44,6 +48,15 @@ namespace MobileShell
             tkBar.Show();
 
             Configure();
+        }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            
+        }
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            System.Windows.MessageBox.Show("RIP");
         }
 
         private void kbh_OnKeyUnpressed(object sender, VirtualKeyShort e)

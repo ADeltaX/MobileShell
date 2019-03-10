@@ -19,37 +19,37 @@
         Height="24">
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <Grid Width="24" Margin="8,0,0,0" Height="24" Background="Transparent">
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,0" UnicodeString="&#xE876;" />
+            <Grid Width="22" Margin="10,0,0,0" Height="24" Background="Transparent">
                 <!--<Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,0" UnicodeString="&#xE876;" />-->
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
                         FontRenderingEmSize="16" Fill="#7f7f7f" Margin="0,0,0,4" UnicodeString="&#xE870;" />
                 <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,4" UnicodeString="&#xE86E;" />-->
+                    FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,4" UnicodeString="&#xE86E;" />
             </Grid>
 
-            <Grid Width="24" Height="24" Background="Transparent">
+            <Grid Width="22" Height="24" Background="Transparent">
                 <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                        FontRenderingEmSize="16" Fill="#ffffff" Margin="2,0,0,4" UnicodeString="&#xE701;" />
+                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,4" UnicodeString="&#xE701;"  RenderOptions.EdgeMode="Aliased"  RenderOptions.BitmapScalingMode="Fant"  RenderOptions.CachingHint="Cache" />
                 <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,4" UnicodeString="&#xE880;" />
+                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,4,2,4" UnicodeString="&#xE880;" />
             </Grid>
-            <Grid Width="24" Height="24" Background="Transparent">
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEC41;" />
+            <Grid Width="22" Height="24" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="12" Width="12" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="12" Fill="#ffffff" UnicodeString="&#xE708;" />
             </Grid>
-            <Grid Width="24" Height="24" Background="Transparent">
+            <Grid Width="22" Height="24" Background="Transparent">
                 <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xE877;" />
+                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEC42;" />
             </Grid>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock FontSize="14" Margin="0,0,0,0" Text="76%" Foreground="#ffffff" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            <Grid Width="36" Height="24" Background="Transparent">
+            <TextBlock FontSize="13.5" Margin="0,0,0,1" Text="69%" Foreground="#ffffff" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Grid Width="40" Height="24" Background="Transparent">
                 <Glyphs x:Name="batteryGlyph" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="24" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEBB5;" />
+                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEBA1;" />
             </Grid>
-            <TextBlock x:Name="textBlock_Clock" FontSize="14" Margin="0,0,8,0" Text="12:61" Foreground="#ffffff" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <TextBlock x:Name="textBlock_Clock" FontSize="13.5" Margin="0,0,10,1" Text="18:23" Foreground="#ffffff" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </StackPanel>
         <TextBlock Text="MobileShell TEST" Foreground="White" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Grid>

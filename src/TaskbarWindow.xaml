@@ -16,7 +16,7 @@
         UseLayoutRounding="True"
         Topmost="True"
         Background="Transparent"
-        Height="42">
+        Height="48">
     <Grid>
         <Grid Background="#FF000000" PreviewTouchDown="Grid_PreviewTouchDown" />
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -24,7 +24,7 @@
                 <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="20" Width="20" HorizontalAlignment="Left" 
                     FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="" />
             </Button>
-            <Button Click="WindowsLogo_Click" Style="{StaticResource FlatButton}" Width="48" Padding="0" Height="42" Background="Transparent" Margin="72,0">
+            <Button Click="WindowsLogo_Click" Style="{StaticResource FlatButton}" Width="48" Padding="0" Height="42" Background="Transparent" Margin="64,0">
                 <Glyphs FontUri="pack://application:,,,/MobileShell;component/Fonts/HOLOMDL2.TTF" Height="20" Width="20" HorizontalAlignment="Left" 
                     FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="&#xE782;" />
             </Button>

@@ -17,7 +17,8 @@
         Topmost="True"
         Background="#FF444444"
         Title="VolumeAudioFlyout" 
-        Height="80">
+        Height="80"
+        Loaded="Window_Loaded">
     <Grid>
         <TextBlock Foreground="White" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="FAKE AUDIO FLYOUT" VerticalAlignment="Top"/>
         <Grid>
