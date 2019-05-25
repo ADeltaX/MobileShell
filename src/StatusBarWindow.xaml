@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MobileShell"
+        xmlns:controls="clr-namespace:MobileShell.Controls"
         mc:Ignorable="d"
         d:DesignWidth="350"
         WindowStyle="None"
@@ -17,40 +18,64 @@
         Topmost="True"
         Background="#FF000000" 
         Height="24">
-    <Grid>
+    
+    <Grid x:Name="gridStatusBar">
         <StackPanel Orientation="Horizontal">
-            <Grid Width="22" Margin="10,0,0,0" Height="24" Background="Transparent">
-                <!--<Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,0" UnicodeString="&#xE876;" />-->
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                        FontRenderingEmSize="16" Fill="#7f7f7f" Margin="0,0,0,4" UnicodeString="&#xE870;" />
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,4" UnicodeString="&#xE86E;" />
+            <StackPanel Margin="12,0,0,0" x:Name="phoneLinesStackPanel" Orientation="Horizontal" />
+
+            <Grid x:Name="roamingGrid" Visibility="Collapsed" Width="22" Height="24" Background="Transparent">
+                <Glyphs x:Name="roamingGlyph" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xE878;" />
+            </Grid>
+            
+            <Grid x:Name="wifiGrid" Visibility="Collapsed" Width="22" Height="24" Background="Transparent">
+                <Grid x:Name="wifiComposedGlyphsGrid">
+                    <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#7f7f7f" UnicodeString="&#xEC3F;" />
+                    <Glyphs x:Name="wifiSignals" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEC3C;" />
+                    <Glyphs Visibility="Collapsed" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xE880;" />
+                </Grid>
             </Grid>
 
-            <Grid Width="22" Height="24" Background="Transparent">
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,4" UnicodeString="&#xE701;"  RenderOptions.EdgeMode="Aliased"  RenderOptions.BitmapScalingMode="Fant"  RenderOptions.CachingHint="Cache" />
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,4,2,4" UnicodeString="&#xE880;" />
+            <Grid x:Name="ethernetGrid" Visibility="Collapsed" Width="22" Height="24" Background="Transparent">
+                <Glyphs x:Name="ethernetGlyph" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xE839;" />
             </Grid>
-            <Grid Width="22" Height="24" Background="Transparent">
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="12" Width="12" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="12" Fill="#ffffff" UnicodeString="&#xE708;" />
+
+            <Grid x:Name="notificationGrid" Visibility="Collapsed" Width="22" Height="24" Background="Transparent">
+                <Glyphs x:Name="notificationGlyph" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,2" UnicodeString="&#xEC42;" />
             </Grid>
-            <Grid Width="22" Height="24" Background="Transparent">
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEC42;" />
+            
+            <Grid x:Name="locationGrid" Visibility="Collapsed" Width="22" Height="24" Background="Transparent">
+                <Glyphs x:Name="locationGlyph" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEC43;" />
             </Grid>
+            
+            <Grid x:Name="focusGrid" Visibility="Collapsed" Width="22" Height="24" Background="Transparent">
+                <Glyphs x:Name="focusGlyph" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEC46;" FlowDirection="LeftToRight" />
+            </Grid>
+            
         </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock FontSize="13.5" Margin="0,0,0,1" Text="69%" Foreground="#ffffff" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,12,0">
+            <Grid Width="40" Height="24" Background="Transparent">
+                <TextBlock x:Name="releaseTypeGlyph" FontFamily="C:\Windows\Fonts\seguiemj.ttf" Height="18" Width="24" HorizontalAlignment="Center" 
+                    FontSize="16" Foreground="#ffffff"  />
+            </Grid>
+            <TextBlock x:Name="batteryPercentage" FontSize="11" Margin="0,0,-4,2" Text="0%" Foreground="#ffffff" 
+                       HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible" />
+            
             <Grid Width="40" Height="24" Background="Transparent">
                 <Glyphs x:Name="batteryGlyph" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="24" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEBA1;" />
+                    FontRenderingEmSize="16" Fill="#ffffff" UnicodeString="&#xEC02;" />
             </Grid>
-            <TextBlock x:Name="textBlock_Clock" FontSize="13.5" Margin="0,0,10,1" Text="18:23" Foreground="#ffffff" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+            <TextBlock x:Name="clockTextBox" FontSize="13.5" Margin="0,0,0,1" Text="00:00" Foreground="#ffffff" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </StackPanel>
-        <TextBlock Text="MobileShell TEST" Foreground="White" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <TextBlock Visibility="Visible" Text="MobileShell &#x1F955; r709" Foreground="White" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Button Style="{StaticResource FlatButton}" Click="Button_Click" />
     </Grid>
 </Window>

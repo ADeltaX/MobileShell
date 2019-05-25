@@ -17,25 +17,28 @@
         Topmost="True"
         Background="Transparent"
         Height="48">
-    <Grid>
+    <Grid x:Name="gridTaskBar">
         <Grid Background="#FF000000" PreviewTouchDown="Grid_PreviewTouchDown" />
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Stylus.IsPressAndHoldEnabled="False" PreviewTouchDown="Button_PreviewTouchDown" Style="{StaticResource FlatButton}" Width="48" Padding="0" Height="42" Background="Transparent">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" FlowDirection="LeftToRight">
+            <Button Stylus.IsPressAndHoldEnabled="False" PreviewTouchDown="Button_PreviewTouchDown" Style="{StaticResource FlatButton}" 
+                    x:Name="backButton" Width="48" Padding="0" Height="48" Background="Transparent" MouseRightButtonUp="BackButton_MouseRightButtonUp">
                 <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="20" Width="20" HorizontalAlignment="Left" 
                     FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="" />
             </Button>
-            <Button Click="WindowsLogo_Click" Style="{StaticResource FlatButton}" Width="48" Padding="0" Height="42" Background="Transparent" Margin="64,0">
+            <Button x:Name="windowsButton" Click="WindowsLogo_Click" Style="{StaticResource FlatButton}" Width="48" Padding="0" 
+                    Height="48" Background="Transparent" Margin="64,0" MouseRightButtonUp="WindowsButton_MouseRightButtonUp">
                 <Glyphs FontUri="pack://application:,,,/MobileShell;component/Fonts/HOLOMDL2.TTF" Height="20" Width="20" HorizontalAlignment="Left" 
                     FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="&#xE782;" />
             </Button>
-            <Button Click="SearchButton_Click" Style="{StaticResource FlatButton}" Width="48" Padding="0" Height="42" Background="Transparent">
+            <Button x:Name="searchButton" Click="SearchButton_Click" Style="{StaticResource FlatButton}" Width="48" Padding="0" 
+                    Height="48" Background="Transparent">
                 <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="20" Width="20" HorizontalAlignment="Left" 
                     FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="&#xE11A;" />
             </Button>
         </StackPanel>
-        <!--<Button Style="{StaticResource Flat}" Width="48" Padding="0" Height="42" Background="Transparent" HorizontalAlignment="Right">
+        <Button Style="{StaticResource FlatButton}" Visibility="Collapsed" Width="48" Padding="0" Height="48" Background="Transparent" HorizontalAlignment="Right">
             <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="20" Width="20" HorizontalAlignment="Left" 
                     FontRenderingEmSize="20" Fill="#bfbfbf" Margin="8" UnicodeString="&#xE10C;" />
-        </Button>-->
+        </Button>
     </Grid>
 </Window>

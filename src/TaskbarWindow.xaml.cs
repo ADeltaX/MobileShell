@@ -1,10 +1,13 @@
 ﻿using MobileShell.Classes;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Threading;
 using static MobileShell.Classes.NativeMethods;
 namespace MobileShell
 {
@@ -29,6 +32,61 @@ namespace MobileShell
             Left = 0;
         }
 
+        public void SetVisibility(Visibility vis) => Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => Visibility = vis));
+
+        public void SetupAppBar()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+            {
+                WindowInteropHelper wndHelper = new WindowInteropHelper(this);
+
+                int exStyle = (int)GetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE);
+
+                exStyle |= (int)ExtendedWindowStyles.WS_EX_TOOLWINDOW | (int)ExtendedWindowStyles.WS_EX_NOACTIVATE;
+                SetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
+
+                SetWindowPos(wndHelper.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
+
+                appbarMessageId = AppBar.RegisterBar(this, Screen.PrimaryScreen, Width * App.DPI, Height * App.DPI, ABEdge.ABE_BOTTOM); //Height
+            }));
+        }
+
+        public void UpdateAppBar()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => 
+                AppBar.ABSetPos(this, Screen.PrimaryScreen, Width * App.DPI, Height * App.DPI, ABEdge.ABE_BOTTOM)));
+        }
+
+        public void UnSetupAppBar()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+            {
+                APPBARDATA abd = new APPBARDATA();
+                abd.cbSize = Marshal.SizeOf(typeof(APPBARDATA));
+                IntPtr handle = new WindowInteropHelper(this).Handle;
+                abd.hWnd = handle;
+                SHAppBarMessage((int)ABMsg.ABM_REMOVE, ref abd);
+            }));
+        }
+
+        //Todo
+        private void Turn()
+        {
+            appbarMessageId = AppBar.RegisterBar(this, Screen.PrimaryScreen, 48 * App.DPI, Screen.PrimaryScreen.Bounds.Height / App.DPI, ABEdge.ABE_RIGHT);
+
+            gridTaskBar.RenderTransformOrigin = new Point(0.5, 0.5);
+            gridTaskBar.LayoutTransform = new RotateTransform(-90);
+
+            searchButton.RenderTransformOrigin = new Point(0.5, 0.5);
+            searchButton.LayoutTransform = new RotateTransform(90);
+
+            windowsButton.RenderTransformOrigin = new Point(0.5, 0.5);
+            windowsButton.LayoutTransform = new RotateTransform(90);
+
+            backButton.RenderTransformOrigin = new Point(0.5, 0.5);
+            backButton.LayoutTransform = new RotateTransform(90);
+        }
+
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
@@ -40,10 +98,13 @@ namespace MobileShell
         {
             if (msg == appbarMessageId && appbarMessageId != -1)
             {
-                if (msg == 0x0006)
-                    AppBar.AppBarActivate(hwnd);
-                else
-                    App.HideExplorerTaskbar();
+                if (App.IsTabletMode)
+                {
+                    if (msg == 0x0006)
+                        AppBar.AppBarActivate(hwnd);
+                    else
+                        App.HideExplorerTaskbar();
+                }
 
                 return IntPtr.Zero;
             }
@@ -52,32 +113,18 @@ namespace MobileShell
                 handled = true;
                 return new IntPtr(MA_NOACTIVATE);
             }
-            else
-            {
-                return IntPtr.Zero;
-            }
+
+            return IntPtr.Zero;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //AcrylicBlur ab = new AcrylicBlur(this);
-            //ab.EnableBlur();
+            //new AcrylicBlur(this).EnableBlur();
 
-            WindowInteropHelper wndHelper = new WindowInteropHelper(this);
-
-            int exStyle = (int)GetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE);
-
-            exStyle |= (int)ExtendedWindowStyles.WS_EX_TOOLWINDOW | (int)ExtendedWindowStyles.WS_EX_NOACTIVATE;
-            SetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
-
-            SetWindowPos(wndHelper.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
-
-            appbarMessageId = AppBar.RegisterBar(this, Screen.PrimaryScreen, Width * App.DPI, Height * App.DPI, ABEdge.ABE_BOTTOM);
-
-            App.Configure();
+            //Turn();
         }
 
-        private void Grid_PreviewTouchDown(object sender, System.Windows.Input.TouchEventArgs e)
+        private void Grid_PreviewTouchDown(object sender, TouchEventArgs e)
         {
             if (e.IsDoubleTap(this, ref _lastTapLocation, _doubleTapStopwatch))
                 SendMessage(0xFFFF, 0x112, 0xF170, 2);
@@ -97,15 +144,28 @@ namespace MobileShell
 
         private async void Button_PreviewTouchDown(object sender, TouchEventArgs e)
         {
-            if (await WPFHelper.TouchHold(sender as FrameworkElement, TimeSpan.FromSeconds(.5))) //More than enough
+            if (await WPFHelper.TouchHold(sender as FrameworkElement, TimeSpan.FromSeconds(.10))) //More than enough
             {
                 ShellKeyCombo(VirtualKeyShort.LWIN, VirtualKeyShort.TAB);
             }
             else
             {
-                //TODO: Desktop mode uses ALT + ESC, so check if it's in tablet mode or desktop mode
+                //Desktop mode uses ALT + ESC
                 ShellKeyCombo(VirtualKeyShort.LWIN, VirtualKeyShort.BACK);
             }
+        }
+
+        /// <summary>
+        /// Desktop support for task view/timeline
+        /// </summary>
+        private void BackButton_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ShellKeyCombo(VirtualKeyShort.LWIN, VirtualKeyShort.TAB);
+        }
+
+        private void WindowsButton_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ShellKeyCombo(VirtualKeyShort.LWIN, VirtualKeyShort.KEY_X);
         }
     }
 }

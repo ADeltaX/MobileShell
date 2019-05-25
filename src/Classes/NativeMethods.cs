@@ -18,6 +18,7 @@ namespace MobileShell.Classes
         public const int WM_SYSKEYUP = 0x105;
         public const int WM_MOUSEACTIVATE = 0x0021;
         public const int MA_NOACTIVATE = 0x0003;
+        public const int WM_SETTINGCHANGE = 0x001A;
         public const int INPUT_KEYBOARD = 1;
 
         public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);

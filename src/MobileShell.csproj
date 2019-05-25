@@ -41,6 +41,10 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.WindowsRuntime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETCore\v4.5\System.Runtime.WindowsRuntime.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,6 +54,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Windows">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.16299.0\Windows.winmd</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -63,7 +70,18 @@
     <Compile Include="Classes\AcrylicBlur.cs" />
     <Compile Include="Classes\AppBar.cs" />
     <Compile Include="Classes\HookEngine.cs" />
+    <Compile Include="Classes\WnfQueries.cs" />
     <Compile Include="Classes\WPFHelper.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\DualSimStatusNumberToUnicodeConverter.cs" />
+    <Compile Include="Converters\PhoneNetworkStateRoamingToUnicodeConverter.cs" />
+    <Compile Include="Enums\ConnectionType.cs" />
+    <Compile Include="Controls\CellularIcon.xaml.cs">
+      <DependentUpon>CellularIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\PhoneSimToVisibilityConverter.cs" />
+    <Compile Include="Converters\SignalStrengthToUnicodeConverter.cs" />
+    <Compile Include="Enums\SignalStrength.cs" />
     <Compile Include="StatusBarWindow.cs">
       <DependentUpon>StatusBarWindow.xaml</DependentUpon>
     </Compile>
@@ -73,6 +91,10 @@
     <Compile Include="VolumeAudioFlyout.xaml.cs">
       <DependentUpon>VolumeAudioFlyout.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\CellularIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StatusBarWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -120,5 +142,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y $(TargetPath) C:\NETWORK_SHARE\$(TargetFileName)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

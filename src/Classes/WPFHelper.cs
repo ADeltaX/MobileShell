@@ -9,8 +9,8 @@ namespace MobileShell.Classes
 {
     public static class WPFHelper
     {
-        private const int MAX_LENGTH = 15;
-        private const int MAX_TIME_MILLISECONDS = 250;
+        private const int MAX_LENGTH = 30;
+        private const int MAX_TIME_MILLISECONDS = 750; //Or 500?
 
         public static bool IsDoubleTap(this TouchEventArgs e, IInputElement inputReference, ref Point? lastTapLocation, Stopwatch doubleTapStopwatch)
         {
