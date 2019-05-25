@@ -16,12 +16,14 @@
     - Cellular (+ dual sim) -> WIP, expected to be broken
     - Tablet mode or Desktop mode (expected to be broken)
     - It may bug explorer.exe, in that case open Task Manager, kill MobileShell, go in Desktop mode and launch MobileShell again.
+- Double tap to sleep
+- Click/touch the status bar to open the action center
 
 ## Issues:
 
-No support for rotation -> it will glitch
-No support for DPI changes -> it will glitch
-No support for resolution changes --> it will glitch
+ - No support for rotation -> it will glitch
+ - No support for DPI changes -> it will glitch
+ - No support for resolution changes --> it will glitch
 
 ## Tasks
 
