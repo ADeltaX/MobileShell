@@ -1,4 +1,4 @@
-# MobileShell - A custom shell for Windows 10 on ARM64
+# MobileShell - A custom shell for Windows 10 Desktop/ARM64 (17763+)
 
 ### Running on a PC:
 ![pcMobileShell](demo/PC.png "MobileShell running on a PC")
