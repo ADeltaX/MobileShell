@@ -9,6 +9,8 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using static MobileShell.Classes.NativeMethods;
+using MessageBox = System.Windows.MessageBox;
+
 namespace MobileShell
 {
     /// <summary>
@@ -112,6 +114,17 @@ namespace MobileShell
             {
                 handled = true;
                 return new IntPtr(MA_NOACTIVATE);
+            }
+            else if (msg == WM_DISPLAYCHANGE)
+            {
+                //MessageBox.Show("WM_DISPLAYCHANGE");
+                App.UpdateScreenAppBar();
+            }
+            else if (msg == WM_DPICHANGED)
+            {
+                //MessageBox.Show("WM_DPICHANGED");
+                App.DPI = (wParam.ToInt32() & 0xFFFF) / 96F;
+                App.UpdateScreenAppBar();
             }
 
             return IntPtr.Zero;

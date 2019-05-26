@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Calls;
 using Windows.ApplicationModel.Calls.Provider;
 using Windows.ApplicationModel.CommunicationBlocking;
 using Windows.Devices.Radios;
+using Windows.Foundation.Metadata;
 using Windows.Networking.Connectivity;
 using Windows.Networking.NetworkOperators;
 using Windows.Phone.Notification.Management;
@@ -28,7 +29,7 @@ namespace MobileShell
     /// </summary>
     public partial class App : System.Windows.Application
     {
-        public static float DPI { get; private set; } = 1F;
+        public static float DPI { get; set; } = 1F;
         public static bool IsTabletMode { get; set; }
         public static HookEngine Kbh { get; set; }
 
@@ -101,6 +102,12 @@ namespace MobileShell
 
         private async Task NotifAsync()
         {
+            if (!ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.PhoneLine"))
+            {
+                MessageBox.Show("If you see this message means OK!");
+                return;
+            }
+
             var phoneLines = await GetPhoneLinesAsync();
             var isDualSim = phoneLines.Count > 1;
 
@@ -179,7 +186,13 @@ namespace MobileShell
         {
             if (e == VirtualKeyShort.VOLUME_UP || e == VirtualKeyShort.VOLUME_DOWN)
                 vlFly.SetVolume(e);
+        }
 
+        public static void UpdateScreenAppBar()
+        {
+            ResetScreenCache();
+            stBar.SetupAppBar();
+            tkBar.SetupAppBar();
         }
 
         public static void ResetScreenCache()
