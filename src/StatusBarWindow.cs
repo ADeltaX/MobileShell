@@ -2,6 +2,7 @@
 using MobileShell.Controls;
 using MobileShell.Enums;
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -197,7 +198,7 @@ namespace MobileShell
             //CLOCK
             DispatcherTimer dispClock = new DispatcherTimer(TimeSpan.FromMilliseconds(1000), DispatcherPriority.Render, delegate
             {
-                clockTextBox.Text = DateTime.Now.ToString("HH:mm"); //+- 1s
+                clockTextBox.Text = DateTime.Now.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimeFormat, CultureInfo.CurrentCulture.Name); //+- 1s
             }, Dispatcher);
 
             //TODO: better way
