@@ -123,6 +123,7 @@ namespace MobileShell
                 SetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
 
                 appbarMessageId = AppBar.RegisterBar(this, Screen.PrimaryScreen, Width * App.DPI, Height * App.DPI, ABEdge.ABE_TOP); //Height
+                //Turn();
             }));
         }
 
@@ -151,6 +152,10 @@ namespace MobileShell
 
             gridStatusBar.RenderTransformOrigin = new Point(0.5, 0.5);
             gridStatusBar.LayoutTransform = new RotateTransform(-90);
+
+            gridStatusBar.Width = Screen.PrimaryScreen.Bounds.Height / App.DPI; // !important
+            gridStatusBar.Height = 48; // !important
+            gridStatusBar.Margin = new Thickness(0, 0, 0, 0);
 
             clockTextBox.RenderTransformOrigin = new Point(0.5, 0.5);
             clockTextBox.LayoutTransform = new RotateTransform(90);
