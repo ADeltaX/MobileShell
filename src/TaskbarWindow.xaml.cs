@@ -50,6 +50,7 @@ namespace MobileShell
                 SetWindowPos(wndHelper.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
 
                 appbarMessageId = AppBar.RegisterBar(this, Screen.PrimaryScreen, Width * App.DPI, Height * App.DPI, ABEdge.ABE_BOTTOM); //Height
+                //Turn();
             }));
         }
 

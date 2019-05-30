@@ -123,6 +123,7 @@ namespace MobileShell
                 SetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
 
                 appbarMessageId = AppBar.RegisterBar(this, Screen.PrimaryScreen, Width * App.DPI, Height * App.DPI, ABEdge.ABE_TOP); //Height
+                //Turn();
             }));
         }
 
@@ -152,6 +153,10 @@ namespace MobileShell
             gridStatusBar.RenderTransformOrigin = new Point(0.5, 0.5);
             gridStatusBar.LayoutTransform = new RotateTransform(-90);
 
+            gridStatusBar.Width = Screen.PrimaryScreen.Bounds.Height / App.DPI; // !important
+            gridStatusBar.Height = 48; // !important
+            gridStatusBar.Margin = new Thickness(0, 0, 0, 0);
+
             clockTextBox.RenderTransformOrigin = new Point(0.5, 0.5);
             clockTextBox.LayoutTransform = new RotateTransform(90);
 
@@ -173,8 +178,8 @@ namespace MobileShell
             ethernetGlyph.RenderTransformOrigin = new Point(0.5, 0.5);
             ethernetGlyph.LayoutTransform = new RotateTransform(90);
 
-            wifiComposedGlyphsGrid.RenderTransformOrigin = new Point(0.5, 0.5);
-            wifiComposedGlyphsGrid.LayoutTransform = new RotateTransform(90);
+            wifiGrid.RenderTransformOrigin = new Point(0.5, 0.5);
+            wifiGrid.LayoutTransform = new RotateTransform(90);
 
             roamingGlyph.RenderTransformOrigin = new Point(0.5, 0.5);
             roamingGlyph.LayoutTransform = new RotateTransform(90);
@@ -198,7 +203,7 @@ namespace MobileShell
             //CLOCK
             DispatcherTimer dispClock = new DispatcherTimer(TimeSpan.FromMilliseconds(1000), DispatcherPriority.Render, delegate
             {
-                clockTextBox.Text = DateTime.Now.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern, CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name)); //+- 1s
+                clockTextBox.Text = DateTime.Now.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern, CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name)).Replace(" AM", "").Replace(" PM", ""); //+- 1s
             }, Dispatcher);
 
             //TODO: better way
