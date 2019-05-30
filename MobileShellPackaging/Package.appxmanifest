@@ -10,9 +10,9 @@
   IgnorableNamespaces="uap rescap desktop">
 
   <Identity
-    Name="MobileShell"
-    Publisher="CN=Shado"
-    Version="1.0.1.0" />
+    Name="1407ADeltaX.MobileShell"
+    Publisher="CN=8B6B3050-BC98-487A-8EF5-8F8C0CC5340D"
+    Version="0.0.727.0" />
 
   <Properties>
     <DisplayName>MobileShell</DisplayName>
@@ -50,7 +50,7 @@
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
         Square44x44Logo="Images\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
+        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png"  Square71x71Logo="Images\SmallTile.png" Square310x310Logo="Images\LargeTile.png"/>
         <uap:SplashScreen Image="Images\SplashScreen.png" />
         <uap:InitialRotationPreference>
           <uap:Rotation Preference="landscape"/>
@@ -63,7 +63,7 @@
   </Applications>
 
   <Capabilities>
-    <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />
+    <Capability Name="internetClient"/>
   </Capabilities>
 </Package>
