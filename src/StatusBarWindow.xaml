@@ -75,7 +75,7 @@
             <TextBlock Margin="6,0,0,1" x:Name="clockTextBox" FontSize="13.5" Text="00:00" Foreground="White" VerticalAlignment="Center" TextAlignment="Center"/>
         </StackPanel>
 
-        <TextBlock Grid.ColumnSpan="3" Text="MobileShell &#x1F955; r725" Foreground="White" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,2"/>
+        <TextBlock Grid.ColumnSpan="3" Text="MobileShell &#x1F955; r808" FontFamily="Segoe UI Emoji" Foreground="White" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,2"/>
         <Button Grid.ColumnSpan="3" Style="{StaticResource FlatButton}" Click="Button_Click" />
     </Grid>
 </Window>

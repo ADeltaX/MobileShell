@@ -203,7 +203,8 @@ namespace MobileShell
             //CLOCK
             DispatcherTimer dispClock = new DispatcherTimer(TimeSpan.FromMilliseconds(1000), DispatcherPriority.Render, delegate
             {
-                clockTextBox.Text = DateTime.Now.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern, CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name)).Replace(" AM", "").Replace(" PM", ""); //+- 1s
+                clockTextBox.Text = DateTime.Now.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern, 
+                                    CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name)).Replace("AM", "").Replace("PM", "").TrimEnd(); //+- 1s
             }, Dispatcher);
 
             //TODO: better way

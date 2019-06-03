@@ -4,8 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MobileShell"
+        xmlns:converters="clr-namespace:MobileShell.Converters"
+        xmlns:controls="clr-namespace:MobileShell.Controls"
         mc:Ignorable="d"
         d:DesignWidth="350"
+        SizeToContent="Height"
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="NoResize"
@@ -15,34 +18,121 @@
         Focusable="False"
         UseLayoutRounding="True"
         Topmost="True"
-        Background="#FF444444"
+        Background="#FF393939"
         Title="VolumeAudioFlyout" 
-        Height="80"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        PreviewMouseUp="Window_PreviewMouseUp" 
+        PreviewStylusUp="Window_PreviewStylusUp" 
+        PreviewMouseDown="Window_PreviewMouseDown" 
+        PreviewStylusDown="Window_PreviewStylusDown"
+        KeyUp="Window_KeyUp">
+    <Window.Resources>
+        <converters:SliderValueToTextValueConverter x:Key="SliderValueToTextValueConverter" />
+    </Window.Resources>
     <Grid>
-        <TextBlock Foreground="White" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="FAKE AUDIO FLYOUT" VerticalAlignment="Top"/>
-        <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Grid Height="88" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="32" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Foreground="White" HorizontalAlignment="Left" Margin="8,8,0,0" 
+                       TextWrapping="Wrap" Text="Ringer + Notifications" VerticalAlignment="Top"/>
+
+            <Button Grid.Column="2" VerticalAlignment="Top" Visibility="Collapsed" Margin="0,0,0,0" Stylus.IsPressAndHoldEnabled="False" 
+                    Style="{StaticResource FlatButton}" Width="32" Padding="0" Height="24" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="14" Width="14" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="14" Fill="#ffffff" Margin="0,8,0,0" UnicodeString="&#xE015;" />
+            </Button>
+
+            <Button Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Margin="0,0,0,0" Stylus.IsPressAndHoldEnabled="False" 
+                    Style="{StaticResource FlatButton}" Width="36" Padding="0" Height="36" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="20" Width="20" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="20" Fill="#ffffff" Margin="8,0,0,0" UnicodeString="&#xEA8F;" x:Name="RingerGlyph" />
+            </Button>
+
+            <controls:VolumeSlider Template="{StaticResource VolumeSliderTemplate}" Grid.Row="1" x:Name="RingerNotificationSlider" 
+                    Grid.Column="1" Maximum="10" HorizontalAlignment="Stretch" Margin="16,0,16,0" VerticalAlignment="Top"
+                    Value="2" Minimum="0.99999" IsMoveToPointEnabled="True" Height="36" ValueChanged="RingerNotificationSlider_ValueChanged" />
+
+            <TextBlock Grid.Row="1" Grid.Column="3" Foreground="White" HorizontalAlignment="Right" Margin="0,4,8,0" TextWrapping="Wrap"
+                        Text="{Binding ElementName=RingerNotificationSlider, Path=Value, Converter={StaticResource SliderValueToTextValueConverter}}" 
+                       VerticalAlignment="Top" FontSize="20" FontWeight="Light"/>
+        </Grid>
+        <Grid Height="88" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="32" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Foreground="White" HorizontalAlignment="Left" Margin="8,8,0,0" 
+                       TextWrapping="Wrap" Text="Media + Apps" VerticalAlignment="Top"/>
+
+            <Button Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Margin="0,0,0,0" Stylus.IsPressAndHoldEnabled="False" 
+                    Style="{StaticResource FlatButton}" Width="36" Padding="0" Height="36" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="20" Width="20" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="20" Fill="#ffffff" Margin="8,0,0,0" UnicodeString="&#xE767;" x:Name="VolumeGlyph" />
+            </Button>
+
+            <controls:VolumeSlider Template="{StaticResource VolumeSliderTemplate}" Grid.Row="1" x:Name="MediaAppsSlider" Grid.Column="1" 
+                                   Maximum="30" HorizontalAlignment="Stretch" Margin="16,0,16,0" VerticalAlignment="Top"
+                                   Value="2" IsMoveToPointEnabled="True" Minimum="0.99999" Height="36" ValueChanged="MediaAppsSlider_ValueChanged" />
+
+            <TextBlock Grid.Row="1" Grid.Column="3" Foreground="White" HorizontalAlignment="Right" Margin="0,4,8,0" TextWrapping="Wrap"
+                       Text="{Binding ElementName=MediaAppsSlider, Path=Value, Converter={StaticResource SliderValueToTextValueConverter}}" 
+                       VerticalAlignment="Top" FontSize="20" FontWeight="Light"/>
+        </Grid>
+        <Grid Height="32" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-
-            <Button Grid.Column="0" VerticalAlignment="Top" Margin="0,34,0,0" Stylus.IsPressAndHoldEnabled="False" 
-                    Style="{StaticResource FlatButton}" Width="36" Padding="0" Height="36" Background="Transparent">
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="16" Fill="#ffffff" Margin="0" UnicodeString="&#xE198;" />
+            
+            <Button Grid.Column="0" VerticalAlignment="Top" Margin="0,0,0,0" Stylus.IsPressAndHoldEnabled="False" 
+                    Style="{StaticResource FlatButton}" Padding="12,0" Height="32" Background="Transparent">
+                
+                <!--TODO: USE TOGGLEBUTTON -->
+                <!--THIS IS JUST A PLACEHOLDER, CALM DOWN. -->
+                <Grid HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Glyphs Grid.Column="0" FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
+                        FontRenderingEmSize="16" Fill="#ffffff" Margin="0,0,0,0" UnicodeString="&#xE74F;" />
+                    
+                    <TextBlock Grid.Column="1" Foreground="White" Margin="4,0,0,0" Padding="0,0,0,0" VerticalAlignment="Top"
+                       TextWrapping="Wrap" Text="Mute all" FontSize="11" FontWeight="Light"/>
+                </Grid>
             </Button>
 
-            <Slider x:Name="sldr" Grid.Column="1" Maximum="30" HorizontalAlignment="Stretch" Margin="0,36,0,0" VerticalAlignment="Top" Value="10" />
-
-            <Button Grid.Column="2" VerticalAlignment="Top" Margin="0,34,0,0" Stylus.IsPressAndHoldEnabled="False" 
-                    Style="{StaticResource FlatButton}" Width="36" Padding="0" Height="36" Background="Transparent">
-                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="16" Width="16" HorizontalAlignment="Center" 
-                    FontRenderingEmSize="16" Fill="#bfbfbf" Margin="0" UnicodeString="&#xE015;" />
+            <Button Grid.Column="2" VerticalAlignment="Top" Margin="0,0,0,0" Stylus.IsPressAndHoldEnabled="False" 
+                    Style="{StaticResource FlatButton}" Width="32" Padding="0" Height="32" Background="Transparent">
+                <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" Height="14" Width="14" HorizontalAlignment="Center" 
+                    FontRenderingEmSize="14" Fill="#ffffff" Margin="0,0,0,0" UnicodeString="&#xE014;" />
             </Button>
-
         </Grid>
-
+        <Grid Grid.Row="3">
+            <!-- TODO: System Media Transport Controls here -->
+        </Grid>
     </Grid>
 </Window>

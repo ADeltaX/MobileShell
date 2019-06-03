@@ -52,19 +52,21 @@ namespace MobileShell
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            //Kbh = new HookEngine();
-            //Kbh.OnKeyPressed += kbh_OnKeyPressed;
-            //Kbh.OnKeyUnpressed += kbh_OnKeyUnpressed;
-            //Kbh.HookKeyboard();
+
 
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             stBar = new StatusBarWindow();
             tkBar = new TaskbarWindow();
-            //vlFly = new VolumeAudioFlyout();
+            vlFly = new VolumeAudioFlyout();
 
             stBar.Show();
             tkBar.Show();
+
+            Kbh = new HookEngine();
+            Kbh.OnKeyPressed += kbh_OnKeyPressed;
+            Kbh.OnKeyUnpressed += kbh_OnKeyUnpressed;
+            Kbh.HookKeyboard();
 
 
             //TODO: REMOVE

@@ -12,10 +12,10 @@
   <Identity
     Name="1407ADeltaX.MobileShell"
     Publisher="CN=8B6B3050-BC98-487A-8EF5-8F8C0CC5340D"
-    Version="0.0.727.0" />
+    Version="0.0.808.0" />
 
   <Properties>
-    <DisplayName>MobileShell</DisplayName>
+    <DisplayName>MobileShell Alpha</DisplayName>
     <PublisherDisplayName>ADeltaX</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
@@ -45,7 +45,7 @@
         </uap5:Extension>
       </Extensions>
       <uap:VisualElements
-        DisplayName="MobileShell"
+        DisplayName="MobileShell Alpha"
         Description="MobileShell is a mobile-oriented shell alternative for Windows 10 devices which replaces the standard tablet mode interface."
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
@@ -63,7 +63,7 @@
   </Applications>
 
   <Capabilities>
+    <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />
-    <Capability Name="internetClient"/>
   </Capabilities>
 </Package>

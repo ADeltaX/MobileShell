@@ -38,6 +38,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AudioSwitcher.AudioApi, Version=3.0.0.209, Culture=neutral, PublicKeyToken=fda5729e2db3a64f, processorArchitecture=MSIL">
+      <HintPath>packages\AudioSwitcher.AudioApi.3.0.0\lib\net40\AudioSwitcher.AudioApi.dll</HintPath>
+    </Reference>
+    <Reference Include="AudioSwitcher.AudioApi.CoreAudio, Version=3.0.0.209, Culture=neutral, PublicKeyToken=fda5729e2db3a64f, processorArchitecture=MSIL">
+      <HintPath>packages\AudioSwitcher.AudioApi.CoreAudio.3.0.0.1\lib\net40\AudioSwitcher.AudioApi.CoreAudio.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -67,14 +73,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AudioObservers\AudioSessionCreatedObserver.cs" />
+    <Compile Include="AudioObservers\DeviceChangedObserver.cs" />
+    <Compile Include="AudioObservers\DevicePeakValueChangedObserver.cs" />
+    <Compile Include="AudioObservers\SystemAudioSessionPeakValueChangedObserver.cs" />
+    <Compile Include="AudioObservers\SystemAudioSessionVolumeChangedObserver.cs" />
     <Compile Include="Classes\AcrylicBlur.cs" />
     <Compile Include="Classes\AppBar.cs" />
     <Compile Include="Classes\HookEngine.cs" />
     <Compile Include="Classes\WnfQueries.cs" />
     <Compile Include="Classes\WPFHelper.cs" />
+    <Compile Include="Controls\VolumeSlider.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\DualSimStatusNumberToUnicodeConverter.cs" />
     <Compile Include="Converters\PhoneNetworkStateRoamingToUnicodeConverter.cs" />
+    <Compile Include="Converters\SliderValueToTextValueConverter.cs" />
     <Compile Include="Enums\ConnectionType.cs" />
     <Compile Include="Controls\CellularIcon.xaml.cs">
       <DependentUpon>CellularIcon.xaml</DependentUpon>
@@ -145,6 +158,6 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(TargetPath) C:\NETWORK_SHARE\$(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent>:: copy /Y $(TargetPath) C:\NETWORK_SHARE\$(TargetFileName)</PostBuildEvent>
   </PropertyGroup>
 </Project>
