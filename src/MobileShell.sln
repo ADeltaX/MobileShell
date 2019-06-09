@@ -9,6 +9,8 @@ Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "MobileShell_Installer", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileShellSettings", "..\MobileShellSettings\MobileShellSettings.csproj", "{2B796BBC-6B91-432E-A821-15AC33901135}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileShellServer", "..\MobileShellServer\MobileShellServer.csproj", "{B23746DF-6A13-468E-B481-60AC31D6169B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,26 @@ Global
 		{2B796BBC-6B91-432E-A821-15AC33901135}.Release|x86.ActiveCfg = Release|x86
 		{2B796BBC-6B91-432E-A821-15AC33901135}.Release|x86.Build.0 = Release|x86
 		{2B796BBC-6B91-432E-A821-15AC33901135}.Release|x86.Deploy.0 = Release|x86
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|ARM.Build.0 = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|x64.Build.0 = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Debug|x86.Build.0 = Debug|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|ARM.ActiveCfg = Release|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|ARM.Build.0 = Release|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|ARM64.Build.0 = Release|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|x64.ActiveCfg = Release|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|x64.Build.0 = Release|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|x86.ActiveCfg = Release|Any CPU
+		{B23746DF-6A13-468E-B481-60AC31D6169B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

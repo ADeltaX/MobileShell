@@ -36,6 +36,9 @@ namespace MobileShell
         //We don't wanna GC to collect this, right? *yells*
         private WnfQueries.WnfUserCallback wnfCallback;
 
+        //We DON'T want to have more than one instances opened
+        static Mutex mutex = new Mutex(true, "f93fa850-2d5e-4316-bc9e-MOBILESHELL");
+
         #region Main instances of Window(s)
 
         private static StatusBarWindow stBar;
@@ -49,24 +52,34 @@ namespace MobileShell
             //ShowExplorerTaskbar();
             //return;
 
+            System.Windows.Forms.Application.EnableVisualStyles();
+
+            if (!mutex.WaitOne(TimeSpan.Zero, true))
+            {
+                MessageBox.Show("MobileShell is already running!", "MobileShell", MessageBoxButton.OK, MessageBoxImage.Information);
+                Environment.Exit(0);
+            }
+            else
+            {
+                MessageBox.Show("MobileShell started! Switch to tablet mode to use it.", "MobileShell", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
-
 
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             stBar = new StatusBarWindow();
             tkBar = new TaskbarWindow();
-            vlFly = new VolumeAudioFlyout();
-
+            
             stBar.Show();
             tkBar.Show();
 
-            Kbh = new HookEngine();
-            Kbh.OnKeyPressed += kbh_OnKeyPressed;
-            Kbh.OnKeyUnpressed += kbh_OnKeyUnpressed;
-            Kbh.HookKeyboard();
+            //TODO: Finish.
+            //vlFly = new VolumeAudioFlyout();
+            //Kbh = new HookEngine();
+            //Kbh.OnKeyPressed += kbh_OnKeyPressed;
+            //Kbh.OnKeyUnpressed += kbh_OnKeyUnpressed;
+            //Kbh.HookKeyboard();
 
 
             //TODO: REMOVE
@@ -87,11 +100,9 @@ namespace MobileShell
             PowerManager.RemainingChargePercentChanged += (_, __) => stBar?.UpdateBatteryIconAndPercentage();
             NetworkInformation.NetworkStatusChanged += (_) => stBar?.UpdateNetworkState();
 
-            //RadioAsync();
-
-            //It will hang if we await it.
-            NotifAsync();
-
+            if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.PhoneLine"))
+                NotifAsync();
+            
             wnfCallback = WnfStateUpdates;
 
             WnfQueries.SubscribeWnf(WnfQueries.WNF_SHEL_QUIETHOURS_ACTIVE_PROFILE_CHANGED, wnfCallback);
@@ -104,12 +115,6 @@ namespace MobileShell
 
         private async Task NotifAsync()
         {
-            if (!ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.PhoneLine"))
-            {
-                MessageBox.Show("If you see this message means OK!");
-                return;
-            }
-
             var phoneLines = await GetPhoneLinesAsync();
             var isDualSim = phoneLines.Count > 1;
 
@@ -119,7 +124,7 @@ namespace MobileShell
             {
                 stBar.AddPhoneLine(phoneLine, isDualSim);
                 //phoneLine.LineChanged += PhoneLine_LineChanged;
-            }
+            }           
         }
 
         private void PhoneCallManager_CallStateChanged(object sender, object e)
@@ -212,19 +217,19 @@ namespace MobileShell
             if (stateName == WnfQueries.WNF_SHEL_QUIETHOURS_ACTIVE_PROFILE_CHANGED)
             {
                 var focusAssistStatus = WnfQueries.ToFocusAssistStatus(buffer);
-                stBar.UpdateFocusAssist(focusAssistStatus);
+                stBar?.UpdateFocusAssist(focusAssistStatus);
             }
             else if (stateName == WnfQueries.WNF_LFS_STATE)
             {
                 //LOCATION
                 var locationInUse = WnfQueries.ToBool(buffer);
-                stBar.UpdateLocation(locationInUse);
+                stBar?.UpdateLocation(locationInUse);
             }
             else if (stateName == WnfQueries.WNF_SHEL_NOTIFICATIONS)
             {
                 //NOTIFICATION
                 var notificationsCount = WnfQueries.ToInt32(buffer);
-                stBar.UpdateNotification(notificationsCount);
+                stBar?.UpdateNotification(notificationsCount);
             }
             else if (stateName == WnfQueries.WNF_TMCN_ISTABLETMODE)
             {
@@ -236,12 +241,12 @@ namespace MobileShell
             else if (stateName == WnfQueries.WNF_CELL_SIGNAL_STRENGTH_BARS_CAN0)
             {
                 var signalStrength = WnfQueries.ToInt32(buffer);
-                stBar.UpdateSignalStrength(signalStrength, 0);
+                stBar?.UpdateSignalStrength(signalStrength, 0);
             }
             else if (stateName == WnfQueries.WNF_CELL_SIGNAL_STRENGTH_BARS_CAN1)
             {
                 var signalStrength = WnfQueries.ToInt32(buffer);
-                stBar.UpdateSignalStrength(signalStrength, 0);
+                stBar?.UpdateSignalStrength(signalStrength, 0);
             }
             return IntPtr.Zero;
         }
@@ -251,22 +256,22 @@ namespace MobileShell
             //return;
             if (visible)
             {
-                stBar.SetVisibility(Visibility.Visible);
-                tkBar.SetVisibility(Visibility.Visible);
+                stBar?.SetVisibility(Visibility.Visible);
+                tkBar?.SetVisibility(Visibility.Visible);
                 //stBar.UpdateAppBar(); //STACK OVERFLOW EXCEPTION !!!!111!!!11!
-                stBar.SetupAppBar();
+                stBar?.SetupAppBar();
                 //tkBar.UpdateAppBar();
-                tkBar.SetupAppBar();
+                tkBar?.SetupAppBar();
                 HideExplorerTaskbar();
             }
             else
             {
-                stBar.SetVisibility(Visibility.Collapsed);
-                tkBar.SetVisibility(Visibility.Collapsed);
+                stBar?.SetVisibility(Visibility.Collapsed);
+                tkBar?.SetVisibility(Visibility.Collapsed);
                 //stBar.UpdateAppBar();
-                stBar.UnSetupAppBar();
+                stBar?.UnSetupAppBar();
                 //tkBar.UpdateAppBar();
-                tkBar.UnSetupAppBar();
+                tkBar?.UnSetupAppBar();
                 ResetWorkArea();
                 ShowExplorerTaskbar();
             }

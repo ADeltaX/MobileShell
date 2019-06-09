@@ -12,7 +12,7 @@
   <Identity
     Name="1407ADeltaX.MobileShell"
     Publisher="CN=8B6B3050-BC98-487A-8EF5-8F8C0CC5340D"
-    Version="0.0.808.0" />
+    Version="0.0.814.0" />
 
   <Properties>
     <DisplayName>MobileShell Alpha</DisplayName>
@@ -36,7 +36,7 @@
       <Extensions>
         <desktop:Extension Category="windows.startupTask">
           <!--Executable="" EntryPoint="Windows.FullTrustApplication"> -->
-          <desktop:StartupTask TaskId="MobileShell" Enabled="true" DisplayName="Replace the standard Windows tablet mode shell with MobileShell" />
+          <desktop:StartupTask TaskId="MobileShell" Enabled="false" DisplayName="Replace Windows tablet mode with MobileShell" />
         </desktop:Extension>
         <uap5:Extension Category="windows.appExecutionAlias">
           <uap5:AppExecutionAlias>
