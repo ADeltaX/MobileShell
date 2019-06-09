@@ -1,4 +1,4 @@
-# MobileShell - A custom shell for Windows 10 Desktop/ARM64 (17763+)
+# MobileShell - A custom shell for Windows 10 Desktop/ARM64 (17134+)
 
 ### Running on a PC:
 ![pcMobileShell](demo/PC.png "MobileShell running on a PC")
@@ -20,10 +20,7 @@
 - Click/touch the status bar to open the action center
 
 ## Issues:
-
- - No support for rotation -> it will glitch
- - No support for DPI changes -> it will glitch
- - No support for resolution changes --> it will glitch
+- It's an alpha, expect some issues.
 
 ## Tasks
 
@@ -36,9 +33,9 @@
 - [ ] Finish Cellular icon/behavior implementation
 - [ ] Fix WiFi icon behavior
 - [ ] Fix Tablet/Desktop Mode padding
-- [ ] Add support for rotation
-- [ ] Add support for DPI changes
-- [ ] Add support for resolution changes
+- [X] Add support for rotation (basic)
+- [X] Add support for DPI changes
+- [X] Add support for resolution changes
 - [ ] \(Optional) Fix Tablet\Desktop mode changes behavior (this is kinda hard.)
 
 ## License
