@@ -84,15 +84,13 @@ namespace MobileShell
         }
 
         private List<IAudioSession> audioSessions;
-        
 
         public VolumeAudioFlyout()
         {
             CurrentVolumeAudioFlyout = this;
+            InitializeComponent();
 
             audioSessions = new List<IAudioSession>();
-
-            InitializeComponent();
             var audioController = new CoreAudioController();
             audioController.AudioDeviceChanged.Subscribe(new DeviceChangedObserver());
             var devices = audioController.GetPlaybackDevices(AudioSwitcher.AudioApi.DeviceState.Active).ToList();
@@ -127,7 +125,7 @@ namespace MobileShell
 
             Hide();
 
-            _elapsedTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) }; //TODO: Restore to 0
+            _elapsedTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) }; //TODO: Restore to 2
             _elapsedTimer.Tick += (_, __) =>
             {
                 _elapsedTimer.Stop();

@@ -16,7 +16,7 @@
         Focusable="False"
         UseLayoutRounding="True"
         Topmost="True"
-        Background="#FF000000" 
+        Background="{DynamicResource SystemAltHighBrush}" 
         Height="24">
 
     <Window.Resources>
@@ -24,7 +24,11 @@
             <Setter Property="FontRenderingEmSize" Value="16"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Fill" Value="White"/>
+            <Setter Property="Fill" Value="{DynamicResource SystemBaseHighBrush}" />
+        </Style>
+        
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource SystemBaseHighBrush}" />
         </Style>
     </Window.Resources>
 
@@ -72,10 +76,11 @@
 
             <Glyphs x:Name="batteryGlyph" FontUri="C:\Windows\Fonts\segmdl2.ttf" UnicodeString="&#xEC02;" Margin="0,0,6,0"/>
 
-            <TextBlock Margin="6,0,0,1" x:Name="clockTextBox" FontSize="13.5" Text="00:00" Foreground="White" VerticalAlignment="Center" TextAlignment="Center"/>
+            <TextBlock Margin="6,0,0,1" x:Name="clockTextBox" FontSize="13.5" Text="00:00" VerticalAlignment="Center" TextAlignment="Center"/>
         </StackPanel>
 
-        <TextBlock Grid.ColumnSpan="3" Text="MobileShell &#x1F955; r814" FontFamily="Segoe UI Emoji" Foreground="White" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,2"/>
+        <TextBlock Grid.ColumnSpan="3" Text="MobileShell &#x1F955; r888" FontFamily="Segoe UI Emoji" FontWeight="Regular" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,2"/>
+        
         <Button Grid.ColumnSpan="3" Style="{StaticResource FlatButton}" Click="Button_Click" />
     </Grid>
 </Window>

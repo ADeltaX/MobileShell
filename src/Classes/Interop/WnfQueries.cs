@@ -32,17 +32,11 @@ namespace MobileShell.Classes
         public static bool ToBool(byte[] data) => BitConverter.ToBoolean(data, 0);
         public static int ToInt32(byte[] data) => BitConverter.ToInt32(data, 0);
 
-        public static int QueryUnreadNotifications()
-        {
-            var status = QueryWnf(WNF_SHEL_NOTIFICATIONS);
-            return BitConverter.ToInt32(status.Data, 0);
-        }
+        public static int QueryUnreadNotifications() => ToInt32(QueryWnf(WNF_SHEL_NOTIFICATIONS).Data);
 
-        public static bool QueryIsLocationInUse()
-        {
-            var status = QueryWnf(WNF_LFS_STATE);
-            return BitConverter.ToBoolean(status.Data, 0);
-        }
+        public static bool QueryIsLocationInUse() => ToBool(QueryWnf(WNF_LFS_STATE).Data);
+
+        public static bool QueryIsTabletMode() => ToBool(QueryWnf(WNF_TMCN_ISTABLETMODE).Data);
 
 
         /// <summary>

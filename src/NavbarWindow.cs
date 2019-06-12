@@ -16,13 +16,13 @@ namespace MobileShell
     /// <summary>
     /// Interaction logic for TaskbarWindow.xaml
     /// </summary>
-    public partial class TaskbarWindow : Window
+    public partial class NavbarWindow : Window
     {
         int appbarMessageId = -1;
         private readonly Stopwatch _doubleTapStopwatch = new Stopwatch();
         private Point? _lastTapLocation;
 
-        public TaskbarWindow()
+        public NavbarWindow()
         {
             ShowActivated = false;
             ShowInTaskbar = false;

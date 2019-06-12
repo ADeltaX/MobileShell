@@ -108,7 +108,7 @@ namespace MobileShell.Classes
                     abd.rc.Right = right;
                     if (abd.uEdge == (int)ABEdge.ABE_TOP)
                     {
-                        if (abWindow is TaskbarWindow)
+                        if (abWindow is NavbarWindow)
                             abd.rc.Top = top + Convert.ToInt32(24 * App.DPI); //BIGTODO TODO
                         else
                             abd.rc.Top = top;

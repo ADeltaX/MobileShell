@@ -1,4 +1,4 @@
-﻿<Window x:Class="MobileShell.TaskbarWindow"
+﻿<Window x:Class="MobileShell.NavbarWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -15,7 +15,6 @@
         Visibility="Visible"
         UseLayoutRounding="True"
         Topmost="True"
-        Background="Transparent"
         Height="48">
 
     <Window.Resources>
@@ -23,7 +22,7 @@
             <Setter Property="FontRenderingEmSize" Value="20"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Fill" Value="#bfbfbf"/>
+            <Setter Property="Fill" Value="{DynamicResource NavbarButtonForegroundBrush}"/>
         </Style>
     </Window.Resources>
 
@@ -36,7 +35,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.ColumnSpan="5" Background="#FF000000" PreviewTouchDown="Grid_PreviewTouchDown" />
+        <Grid Grid.ColumnSpan="5" Background="{DynamicResource NavbarBackgroundBrush}" PreviewTouchDown="Grid_PreviewTouchDown" />
         
         <Button Grid.Column="1" Stylus.IsPressAndHoldEnabled="False" PreviewTouchDown="Button_PreviewTouchDown" Style="{StaticResource FlatButton}" x:Name="backButton" MouseRightButtonUp="BackButton_MouseRightButtonUp">
             <Glyphs FontUri="C:\Windows\Fonts\segmdl2.ttf" UnicodeString="" />

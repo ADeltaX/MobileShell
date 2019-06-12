@@ -2,152 +2,158 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:MobileShell"
+             xmlns:s="clr-namespace:MobileShell.Classes"
              xmlns:controls="clr-namespace:MobileShell.Controls"
              Startup="Application_Startup">
     <Application.Resources>
-        
-        <Style x:Key="FlatButton" TargetType="Button">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="{x:Null}" />
-            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border x:Name="hew" Background="{TemplateBinding Background}" Padding="0">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsKeyboardFocused" Value="true">
-                            </Trigger>
-                            <Trigger Property="IsDefaulted" Value="true">
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="true">
-                            </Trigger>
-                            <Trigger Property="ToggleButton.IsChecked" Value="true">
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="false">
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <!--<Setter Property="Background" TargetName="hew" Value="#AA202020" />-->
-                                <Setter Property="BorderBrush" Value="{x:Null}" />
-                                <Setter Property="FontWeight" Value="Normal" />
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="FontWeight" Value="Normal" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        
-        
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- WARNING: CHANGING ORDER WILL BREAK STUFF. -->
+                <s:SharedResourceDictionary x:Name="Accent" Source="/Themes/Accent.xaml" />
+                <s:SharedResourceDictionary x:Name="DarkLightTheme" Source="/Themes/Light.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <Style x:Key="FlatButton" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="{x:Null}" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border x:Name="hew" Background="{TemplateBinding Background}" Padding="0">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsKeyboardFocused" Value="true">
+                                </Trigger>
+                                <Trigger Property="IsDefaulted" Value="true">
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="true">
+                                </Trigger>
+                                <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <!--<Setter Property="Background" TargetName="hew" Value="#AA202020" />-->
+                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                    <Setter Property="FontWeight" Value="Normal" />
+                                </Trigger>
+                                <Trigger Property="IsFocused" Value="True">
+                                    <Setter Property="FontWeight" Value="Normal" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="SliderButtonStyle" TargetType="{x:Type RepeatButton}">
-            <Setter Property="OverridesDefaultStyle" Value="true" />
-            <Setter Property="IsTabStop" Value="false" />
-            <Setter Property="Focusable" Value="false" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type RepeatButton}">
-                        <Border Background="Transparent">
-                            <Border Height="2" Background="{TemplateBinding Foreground}" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style x:Key="SliderButtonStyle" TargetType="{x:Type RepeatButton}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="IsTabStop" Value="false" />
+                <Setter Property="Focusable" Value="false" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Border Background="Transparent">
+                                <Border Height="2" Background="{TemplateBinding Foreground}" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="SliderThumbStyle" TargetType="{x:Type Thumb}">
-            <Setter Property="OverridesDefaultStyle" Value="true" />
-            <Setter Property="Height" Value="18" />
-            <Setter Property="Width" Value="6" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Thumb}">
-                        <Border Name="Thumb"
+            <Style x:Key="SliderThumbStyle" TargetType="{x:Type Thumb}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="Height" Value="18" />
+                <Setter Property="Width" Value="6" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Border Name="Thumb"
                                     Background="{TemplateBinding Foreground}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="0"
                                     CornerRadius="3" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <Style x:Key="BaseVolumeSliderStyle" TargetType="{x:Type Slider}">
-            <Setter Property="OverridesDefaultStyle" Value="true" />
-            <Setter Property="Minimum" Value="0" />
-            <Setter Property="Maximum" Value="100" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="IsTabStop" Value="False" />
-            <Setter Property="Interval" Value="1" />
-            <Setter Property="Height" Value="32" />
-            <Setter Property="SnapsToDevicePixels" Value="true" />
-            <Setter Property="SmallChange" Value="1" />
-            <Setter Property="LargeChange" Value="10" />
-            <Setter Property="IsManipulationEnabled" Value="true" />
-        </Style>
+            <Style x:Key="BaseVolumeSliderStyle" TargetType="{x:Type Slider}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="Minimum" Value="0" />
+                <Setter Property="Maximum" Value="100" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="IsTabStop" Value="False" />
+                <Setter Property="Interval" Value="1" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="SnapsToDevicePixels" Value="true" />
+                <Setter Property="SmallChange" Value="1" />
+                <Setter Property="LargeChange" Value="10" />
+                <Setter Property="IsManipulationEnabled" Value="true" />
+            </Style>
 
-        <Style x:Key="{x:Type Slider}"
+            <Style x:Key="{x:Type Slider}"
                    BasedOn="{StaticResource BaseVolumeSliderStyle}"
                    TargetType="{x:Type Slider}">
-            <Setter Property="Template" Value="{DynamicResource VolumeSliderTemplate}" />
-        </Style>
+                <Setter Property="Template" Value="{DynamicResource VolumeSliderTemplate}" />
+            </Style>
 
-        <ControlTemplate x:Key="VolumeSliderTemplate" TargetType="{x:Type Slider}">
-            <Grid>
-                <Border Name="TrackBackground" Height="2" />
+            <ControlTemplate x:Key="VolumeSliderTemplate" TargetType="{x:Type Slider}">
+                <Grid>
+                    <Border Name="TrackBackground" Height="2" />
 
-                <Border Name="PeakMeter1"
+                    <Border Name="PeakMeter1"
                                         Height="2"
                                         Margin="0,-3,0,0"
                                         HorizontalAlignment="Left"
                                         Background="Gray" Opacity="1" />
 
-                <Border Name="PeakMeter2"
+                    <Border Name="PeakMeter2"
                                         Height="2"
                                         Margin="0,3,0,0"
                                         HorizontalAlignment="Left"
                                         Background="Gray" Opacity="1" />
 
-                <Track Name="PART_Track">
-                    <Track.DecreaseRepeatButton>
-                        <RepeatButton Name="SliderLeft"
+                    <Track Name="PART_Track">
+                        <Track.DecreaseRepeatButton>
+                            <RepeatButton Name="SliderLeft"
                                           Command="Slider.DecreaseLarge"
-                                          Foreground="#009966"
+                                          Foreground="{DynamicResource ImmersiveSystemAccentBrush}"
                                           Style="{StaticResource SliderButtonStyle}" />
-                    </Track.DecreaseRepeatButton>
-                    <Track.Thumb>
-                        <Thumb Name="SliderThumb">
-                            <Thumb.Style>
-                                <Style BasedOn="{StaticResource SliderThumbStyle}" TargetType="{x:Type Thumb}">
-                                    <Setter Property="Foreground" Value="#009966" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource TemplatedParent}}" Value="true">
-                                            <Setter Property="Foreground" Value="Red" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Thumb.Style>
-                        </Thumb>
-                    </Track.Thumb>
-                    <Track.IncreaseRepeatButton>
-                        <RepeatButton Name="SliderRight"
+                        </Track.DecreaseRepeatButton>
+                        <Track.Thumb>
+                            <Thumb Name="SliderThumb">
+                                <Thumb.Style>
+                                    <Style BasedOn="{StaticResource SliderThumbStyle}" TargetType="{x:Type Thumb}">
+                                        <Setter Property="Foreground" Value="{DynamicResource ImmersiveSystemAccentBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource TemplatedParent}}" Value="true">
+                                                <Setter Property="Foreground" Value="Red" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Thumb.Style>
+                            </Thumb>
+                        </Track.Thumb>
+                        <Track.IncreaseRepeatButton>
+                            <RepeatButton Name="SliderRight"
                                           Command="Slider.IncreaseLarge"
-                                          Foreground="#666666"
+                                          Foreground="{DynamicResource VolumeSliderIncreaseBrush}"
                                           Style="{StaticResource SliderButtonStyle}" />
-                    </Track.IncreaseRepeatButton>
-                </Track>
-            </Grid>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Opacity" Value="0.5" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-
+                        </Track.IncreaseRepeatButton>
+                    </Track>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" Value="0.5" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+            
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

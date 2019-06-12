@@ -12,7 +12,7 @@
   <Identity
     Name="1407ADeltaX.MobileShell"
     Publisher="CN=8B6B3050-BC98-487A-8EF5-8F8C0CC5340D"
-    Version="0.0.814.0" />
+    Version="0.0.888.0" />
 
   <Properties>
     <DisplayName>MobileShell Alpha</DisplayName>

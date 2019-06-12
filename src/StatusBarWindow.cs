@@ -432,7 +432,7 @@ namespace MobileShell
                 type = ConnectionType.Wlan;
             else if (temp.IsWwanConnectionProfile)
                 type = ConnectionType.Wwan;
-            else if (temp.ProfileName == "Ethernet")
+            else if (temp.ProfileName.ToLower().Contains("ethernet"))
                 type = ConnectionType.Ethernet;
 
             try

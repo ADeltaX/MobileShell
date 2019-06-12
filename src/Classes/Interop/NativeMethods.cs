@@ -20,6 +20,9 @@ namespace MobileShell.Classes
         public const int WM_DISPLAYCHANGE = 0x007E;
         public const int WM_DPICHANGED = 0x02E0;
         public const int WM_SETTINGCHANGE = 0x001A;
+        public const int WM_DWMCOLORIZATIONCOLORCHANGED = 0x320;
+        public const int WM_DWMCOMPOSITIONCHANGED = 0x31E;
+        public const int WM_THEMECHANGED = 0x031A;
         public const int MA_NOACTIVATE = 0x0003;
         public const int INPUT_KEYBOARD = 1;
 
@@ -52,6 +55,19 @@ namespace MobileShell.Classes
 
             return result;
         }
+
+        [DllImport("uxtheme.dll", EntryPoint = "#95", CharSet = CharSet.Unicode, PreserveSig = true)]
+        internal static extern uint GetImmersiveColorFromColorSetEx(uint dwImmersiveColorSet, uint dwImmersiveColorType, bool bIgnoreHighContrast, uint dwHighContrastCacheMode);
+
+        [DllImport("uxtheme.dll", EntryPoint = "#96", CharSet = CharSet.Unicode, PreserveSig = true)]
+        internal static extern uint GetImmersiveColorTypeFromName(string name);
+
+        [DllImport("uxtheme.dll", EntryPoint = "#98", CharSet = CharSet.Unicode, PreserveSig = true)]
+        internal static extern uint GetImmersiveUserColorSetPreference(bool bForceCheckRegistry, bool bSkipCheckOnFail);
+
+        [DllImport("uxtheme.dll", EntryPoint = "#100", CharSet = CharSet.Unicode, PreserveSig = true)]
+        internal static extern IntPtr GetImmersiveColorNamedTypeByIndex(uint dwIndex);
+
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);

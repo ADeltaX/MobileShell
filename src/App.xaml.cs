@@ -1,24 +1,19 @@
 ﻿using MobileShell.Classes;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
-using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Calls;
-using Windows.ApplicationModel.Calls.Provider;
-using Windows.ApplicationModel.CommunicationBlocking;
-using Windows.Devices.Radios;
+using Windows.Data.Xml.Dom;
 using Windows.Foundation.Metadata;
 using Windows.Networking.Connectivity;
-using Windows.Networking.NetworkOperators;
-using Windows.Phone.Notification.Management;
 using Windows.System.Power;
+using Windows.UI.Notifications;
 using static MobileShell.Classes.NativeMethods;
 using MessageBox = System.Windows.MessageBox;
 
@@ -39,38 +34,54 @@ namespace MobileShell
         //We DON'T want to have more than one instances opened
         static Mutex mutex = new Mutex(true, "f93fa850-2d5e-4316-bc9e-MOBILESHELL");
 
+        
+        private void SendToast(string msg)
+        {
+            XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+
+            XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
+            for (int i = 0; i < stringElements.Length; i++)
+                stringElements[i].AppendChild(toastXml.CreateTextNode(msg));
+
+            ToastNotification toast = new ToastNotification(toastXml) {  Priority = ToastNotificationPriority.High };
+
+            ToastNotificationManager.CreateToastNotifier("MobileShell").Show(toast);
+        }
+
+        private static ThemeEngine themeEngine;
+
         #region Main instances of Window(s)
 
         private static StatusBarWindow stBar;
-        private static TaskbarWindow tkBar;
+        private static NavbarWindow tkBar;
         private static VolumeAudioFlyout vlFly;
 
         #endregion
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            //ShowExplorerTaskbar();
-            //return;
-
-            System.Windows.Forms.Application.EnableVisualStyles();
-
             if (!mutex.WaitOne(TimeSpan.Zero, true))
             {
-                MessageBox.Show("MobileShell is already running!", "MobileShell", MessageBoxButton.OK, MessageBoxImage.Information);
+                SendToast("MobileShell is already running!");
                 Environment.Exit(0);
             }
             else
             {
-                MessageBox.Show("MobileShell started! Switch to tablet mode to use it.", "MobileShell", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (WnfQueries.QueryIsTabletMode())
+                    SendToast("MobileShell started!");
+                else
+                    SendToast("MobileShell started! Switch to tablet mode to use it!");
             }
 
+            System.Windows.Forms.Application.EnableVisualStyles();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
+            themeEngine = new ThemeEngine();
+
             stBar = new StatusBarWindow();
-            tkBar = new TaskbarWindow();
-            
+            tkBar = new NavbarWindow();
+
             stBar.Show();
             tkBar.Show();
 
@@ -82,7 +93,7 @@ namespace MobileShell
             //Kbh.HookKeyboard();
 
 
-            //TODO: REMOVE
+            ////TODO: REMOVE
             //stBar.SetVisibility(Visibility.Visible);
             //tkBar.SetVisibility(Visibility.Visible);
             ////stBar.UpdateAppBar(); //STACK OVERFLOW EXCEPTION !!!!111!!!11!
@@ -90,7 +101,7 @@ namespace MobileShell
             ////tkBar.UpdateAppBar();
             //tkBar.SetupAppBar();
             //HideExplorerTaskbar();
-            ////END TODO.
+            //////END TODO.
 
 
             DPI = (float)VisualTreeHelper.GetDpi(stBar).DpiScaleX;
@@ -101,7 +112,7 @@ namespace MobileShell
             NetworkInformation.NetworkStatusChanged += (_) => stBar?.UpdateNetworkState();
 
             if (ApiInformation.IsTypePresent("Windows.ApplicationModel.Calls.PhoneLine"))
-                NotifAsync();
+                _ = MonitorPhoneAsync();
             
             wnfCallback = WnfStateUpdates;
 
@@ -113,7 +124,7 @@ namespace MobileShell
             WnfQueries.SubscribeWnf(WnfQueries.WNF_CELL_SIGNAL_STRENGTH_BARS_CAN1, wnfCallback);
         }
 
-        private async Task NotifAsync()
+        private async Task MonitorPhoneAsync()
         {
             var phoneLines = await GetPhoneLinesAsync();
             var isDualSim = phoneLines.Count > 1;
@@ -178,7 +189,7 @@ namespace MobileShell
 
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            MessageBox.Show("RIP: \n" + e.Exception.Message);
+            MessageBox.Show("TE - RIP: \n" + e.Exception.Message);
         }
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -208,7 +219,6 @@ namespace MobileShell
             typeof(Screen).GetField("screens", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic).SetValue(null, null);
         }
 
-        //ToDo clean code.
         public IntPtr WnfStateUpdates(ulong stateName, uint changeStamp, IntPtr typeId, IntPtr callbackContext, IntPtr bufferPtr, uint bufferSize)
         {
             byte[] buffer = new byte[bufferSize];
@@ -253,7 +263,6 @@ namespace MobileShell
 
         public static void ChangeMobileShellBehaviour(bool visible)
         {
-            //return;
             if (visible)
             {
                 stBar?.SetVisibility(Visibility.Visible);

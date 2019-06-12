@@ -79,12 +79,15 @@
     <Compile Include="AudioObservers\DevicePeakValueChangedObserver.cs" />
     <Compile Include="AudioObservers\SystemAudioSessionPeakValueChangedObserver.cs" />
     <Compile Include="AudioObservers\SystemAudioSessionVolumeChangedObserver.cs" />
-    <Compile Include="Classes\AcrylicBlur.cs" />
-    <Compile Include="Classes\AppBar.cs" />
-    <Compile Include="Classes\BuildInfo.cs" />
-    <Compile Include="Classes\HookEngine.cs" />
-    <Compile Include="Classes\WnfQueries.cs" />
-    <Compile Include="Classes\WPFHelper.cs" />
+    <Compile Include="Classes\SharedResourceDictionary.cs" />
+    <Compile Include="Classes\Theme\AcrylicBlur.cs" />
+    <Compile Include="Classes\Interop\AppBar.cs" />
+    <Compile Include="Classes\BaseWindow.cs" />
+    <Compile Include="Classes\Helpers\BuildInfo.cs" />
+    <Compile Include="Classes\Interop\HookEngine.cs" />
+    <Compile Include="Classes\Theme\ThemeEngine.cs" />
+    <Compile Include="Classes\Interop\WnfQueries.cs" />
+    <Compile Include="Classes\Helpers\WPFHelper.cs" />
     <Compile Include="Controls\VolumeSlider.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\DualSimStatusNumberToUnicodeConverter.cs" />
@@ -100,8 +103,8 @@
     <Compile Include="StatusBarWindow.cs">
       <DependentUpon>StatusBarWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TaskbarWindow.xaml.cs">
-      <DependentUpon>TaskbarWindow.xaml</DependentUpon>
+    <Compile Include="NavbarWindow.cs">
+      <DependentUpon>NavbarWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="VolumeAudioFlyout.xaml.cs">
       <DependentUpon>VolumeAudioFlyout.xaml</DependentUpon>
@@ -118,8 +121,20 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\NativeMethods.cs" />
-    <Page Include="TaskbarWindow.xaml">
+    <Compile Include="Classes\Interop\NativeMethods.cs" />
+    <Page Include="NavbarWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Dark.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Accent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Light.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
