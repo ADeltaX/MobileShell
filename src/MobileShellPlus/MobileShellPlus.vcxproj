@@ -175,7 +175,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BaseWindow.h" />
-    <ClInclude Include="Immersive.h" />
     <ClInclude Include="NavBarWindow.h" />
     <ClInclude Include="NotificationWindow.h" />
     <ClInclude Include="pch.h" />
@@ -186,7 +185,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseWindow.cpp" />
-    <ClCompile Include="Immersive.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NavBarWindow.cpp" />
     <ClCompile Include="NotificationWindow.cpp" />

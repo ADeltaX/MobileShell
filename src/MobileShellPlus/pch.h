@@ -20,9 +20,3 @@
 #include <winrt/Windows.UI.Composition.h>
 #include <windows.ui.xaml.hosting.desktopwindowxamlsource.h>
 #include <Windows.h>
-
-enum WinTaskbarState
-{
-	AutoHide = 1,
-	OnTop = 0
-};

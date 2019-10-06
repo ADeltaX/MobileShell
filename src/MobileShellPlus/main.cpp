@@ -38,8 +38,10 @@ void SetupPowerManager();
 void SetupRadios();
 void SetRadioStatus(Radio radio);
 void MoveNotificationsOnTop();
-void HideExplorerTaskbar();
-void OverrideAppBar();
+
+
+#pragma bss_seg(".imrsiv")
+[[maybe_unused]] static int MsftWatermark;
 
 int main()
 {
@@ -53,6 +55,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	//Useful to change on-the-fly dpi
 	//SystemParametersInfo(SPI_SETLOGICALDPIOVERRIDE, 0, LPVOID(nullptr), 1);
 
+	MsftWatermark = 0;
+	
 	init_apartment();
 
 	auto windows_xaml_manager = WindowsXamlManager::InitializeForCurrentThread();
@@ -65,8 +69,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	statusBarW->Show();
 	wind->Show();
 
-	//Utils::SetWinTaskbarState(AutoHide);
-	Utils::SetWinTaskbarPos(SWP_HIDEWINDOW | SWP_NOSENDCHANGING);
+	Utils::RemoveWinGestures();
+	Utils::SetWinTaskbarState(AutoHide);
+	Utils::SetWinTaskbarPos(SWP_HIDEWINDOW);
 
 	statusBarW->SetupAppBar();
 	wind->SetupAppBar();
@@ -82,11 +87,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	SetupPowerManager();
 	SetupRadios();
 	wind->SetupHaptics();
-
+	
 	std::thread TA(MoveNotificationsOnTop);
 	std::thread TWifi(GetWifiSignal);
-	//std::thread THideExplorerTaskbar(HideExplorerTaskbar);
-	//std::thread TOverrideAppBar(OverrideAppBar);
 
 	while (GetMessage(&msg, nullptr, 0, 0))
 	{
@@ -329,29 +332,6 @@ void GetWifiSignal()
 		Sleep(2000);
 	}
 }
-
-
-//expensive
-void HideExplorerTaskbar()
-{
-	while (true)
-	{
-		Utils::SetWinTaskbarPos(SWP_HIDEWINDOW | SWP_NOSENDCHANGING);
-		Sleep(10);
-	}
-}
-
-void OverrideAppBar()
-{
-	//explorer.exe may be crashed/restarted, so let's re-set the appbar
-	while (true)
-	{
-		statusBarW->SetupAppBar();
-		wind->SetupAppBar();
-		Sleep(3000);
-	}
-}
-//endofexpensive
 
 NTSTATUS NTAPI WnfCallback(const ULONG64 state_name, void* p2, void* p3, void* callbackContext, void* buffer, ULONG bufferSize)
 {

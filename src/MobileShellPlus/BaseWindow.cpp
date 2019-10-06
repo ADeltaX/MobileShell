@@ -171,7 +171,7 @@ HWND BaseWindow::CreateWindowInternal(HINSTANCE hInstance, LPCWSTR str)
 		nullptr,
 		wndParentClass.hInstance,
 		this,
-		0x1);
+		ZBID_DESKTOP);
 
 	if (!hwndParent)
 	{

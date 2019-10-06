@@ -914,15 +914,24 @@ void StatusBarWindow::SetupAppBar()
 
 	if (orientation == DMDO_DEFAULT || orientation == DMDO_180)
 	{
-		appbarMessageId = Utils::RegisterAppBar(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_TOP);
+		if (appbarMessageId != -1u)
+			Utils::ABSetPos(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_TOP);
+		else
+			appbarMessageId = Utils::RegisterAppBar(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_TOP);
 	}
 	else if (orientation == DMDO_90)
 	{
-		appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
+		if (appbarMessageId != -1u)
+			Utils::ABSetPos(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
+		else
+			appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
 	}
 	else if (orientation == DMDO_270)
 	{
-		appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_LEFT);
+		if (appbarMessageId != -1u)
+			Utils::ABSetPos(hwndParent, width, height, effectiveDpi, ABE_LEFT);
+		else
+			appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_LEFT);
 	}
 
 	HandleRotation(base, child);

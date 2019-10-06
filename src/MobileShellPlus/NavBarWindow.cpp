@@ -84,7 +84,7 @@ UIElement NavBarWindow::BuildUIElement()
         </Button>
 
         <Button x:Name="btnWindows"  Padding="0" Grid.Column="2" Height="48" Width="48" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}" >
-            <FontIcon x:Name="fWindows" Glyph="&#xE8B3;" Rotation="0" CenterPoint="10,10,0">
+            <FontIcon x:Name="fWindows" Glyph="&#xF1AD;" Rotation="0" CenterPoint="10,10,0">
                 <FontIcon.RotationTransition>
                     <ScalarTransition />
                 </FontIcon.RotationTransition>
@@ -323,18 +323,33 @@ void NavBarWindow::SetupAppBar()
 {
 	const auto orientation = Utils::GetCurrentOrientation();
 
+	HandleRotation(base, child);
+
 	if (orientation == DMDO_DEFAULT || orientation == DMDO_180)
 	{
-		appbarMessageId = Utils::RegisterAppBar(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_BOTTOM);
+		if (appbarMessageId != -1u)
+			Utils::ABSetPos(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_BOTTOM);
+		else
+			appbarMessageId = Utils::RegisterAppBar(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_BOTTOM);
+		
+		Utils::SetWinTaskbarPosition(TSB_BOTTOM);
 	}
 	else if (orientation == DMDO_90)
 	{
-		appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_LEFT);
+		if (appbarMessageId != -1)
+			Utils::ABSetPos(hwndParent, width, height, effectiveDpi, ABE_LEFT);
+		else
+			appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_LEFT);
+
+		Utils::SetWinTaskbarPosition(TSB_LEFT);
 	}
 	else if (orientation == DMDO_270)
 	{
-		appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
+		if (appbarMessageId != -1)
+			Utils::ABSetPos(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
+		else
+			appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
+			
+		Utils::SetWinTaskbarPosition(TSB_RIGHT);
 	}
-
-	HandleRotation(base, child);
 }

@@ -159,6 +159,14 @@ void Utils::OpenTaskView()
 	//ShellExecuteEx(&exec);
 }
 
+void Utils::RemoveWinGestures()
+{
+	const auto EdgeUiInputTopHwnd = FindWindow(L"EdgeUiInputTopWndClass", L"");
+	const auto EdgeUiInputHwnd = FindWindow(L"EdgeUiInputWndClass", L"");
+	SendMessage(EdgeUiInputTopHwnd, WM_CLOSE, 0, 0);
+	SendMessage(EdgeUiInputHwnd, WM_CLOSE, 0, 0);
+}
+
 void Utils::SetWinTaskbarState(WinTaskbarState state)
 {
 	APPBARDATA abd;
@@ -169,15 +177,55 @@ void Utils::SetWinTaskbarState(WinTaskbarState state)
 	SHAppBarMessage(ABM_SETSTATE, &abd);
 }
 
-
-
 void Utils::SetWinTaskbarPos(int swp)
 {
 	const auto taskbarHwnd = FindWindow(L"Shell_TrayWnd", L"");
-
-	//ShowWindowAsync(taskbarHwnd, SWP_HIDEWINDOW);
-	SetWindowPos(taskbarHwnd, nullptr, 0, 0, 0, 0, swp | SWP_NOZORDER);
+	SetWindowPos(taskbarHwnd, HWND_BOTTOM, 0, 0, 0, 0, swp | SWP_NOZORDER);
 	
+	SetWindowLong(taskbarHwnd, -20, GetWindowLong(taskbarHwnd, -20) | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_COMPOSITED);
+	SetLayeredWindowAttributes(taskbarHwnd, RGB(0, 0, 0), 0, LWA_ALPHA);
+}
+
+void Utils::SetWinTaskbarPosition(WinTaskbarPosition pos)
+{
+	//Issue: this will change the taskbar position in ALL MONITORS
+	//I wasn't able to find how to change on primary taskbar only, unfortunately
+	//ALSO this makes the rotation a lot slower (because APPBAR slowness technology™)
+	//
+	//Should we enable this?
+
+	//HWND htaskbar = FindWindow(L"Shell_TrayWnd", NULL);
+	//SendNotifyMessage(htaskbar, 0x05CA, 6, (LPARAM)pos);
+}
+
+void Utils::SetWinTaskbarIcons(WinTaskbarIconSize size)
+{
+	HKEY hKey;
+	
+	RegOpenKeyEx(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", 0, KEY_ALL_ACCESS, &hKey);
+	DWORD value = int(size);
+	RegSetValueEx(hKey, L"TaskbarSmallIcons", 0, REG_DWORD, (const BYTE*)&value, sizeof(value));
+	RegCloseKey(hKey);
+	
+	SendNotifyMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)L"TraySettings");
+}
+
+void Utils::SetWinTaskbarSize(int area, int size)
+{
+	HWND hTaskbarWnd = FindWindow(L"Shell_TrayWnd", NULL);
+	if (hTaskbarWnd)
+	{
+		RECT rc;
+		GetWindowRect(hTaskbarWnd, &rc);
+
+		if (area == 1)
+			rc.left = rc.right - size;
+		else
+			rc.right = rc.left + size;
+
+		SendMessage(hTaskbarWnd, WM_SIZING, WMSZ_LEFT, (LPARAM)&rc);
+		SetWindowPos(hTaskbarWnd, NULL, 0, 0, size, rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+	}
 }
 
 MONITORINFO Utils::GetMonitorInfoFromWindow(HWND hWnd)
@@ -202,7 +250,7 @@ void Utils::GetMonitorSizeAndDpiFromWindow(HWND window, double* dpi, int* height
 	//Get DPI
 	unsigned int dpiX = 0;
 	unsigned int dpiY = 0;
-	GetDpiForMonitor(monitor, MONITOR_DPI_TYPE::MDT_EFFECTIVE_DPI, &dpiX, &dpiY);
+	GetDpiForMonitor(monitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY);
 
 	*dpi = dpiX / double(96);
 }
