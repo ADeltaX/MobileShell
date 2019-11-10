@@ -1,4 +1,5 @@
 # MobileShell - A custom shell for Windows 10 Desktop/ARM64 (18362+)
+# Currently on hold (for now)
 # Made using C++ and Xaml Island
 
 ### Running on a PC:
@@ -7,26 +8,28 @@
 ### Running on a phone:
 ![phoneMobileShell](demo/Mobile.png "MobileShell running on a phone")
 
-## What's new:
+## What's supported:
 
 - Battery status (charging, normal, saving)
 - Detects (like w10m):
     - Focus Assist
+    - Bluetooth
     - Location usage
-    - WiFi (expected to be partially broken)
+    - WiFi
     - Cellular (+ dual sim)
-    - It may bug explorer.exe, in that case open Task Manager, kill MobileShell, go in Desktop mode and launch MobileShell again.
 - Double tap to sleep
 - Rotation - DPI - display changes
 - Follows theme colors (currently at launch only)
+- Follows dark/light theme changes in real time
 - Faster (?)
+- Tablet/Desktop mode changes detection
 
 ## Issues:
 - It's an alpha, expect some issues.
 
 ## Tasks
 
-- [ ] Add Tablet/Desktop mode changes detection
+- [ ] Bug fixes (I have listed a lot of bugs to fix / unimplemented checks / unwanted features)
 
 ## License
 
