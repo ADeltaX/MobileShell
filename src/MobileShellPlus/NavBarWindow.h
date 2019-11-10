@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "BaseWindow.h"
 #include "Utils.h"
+#include "Wnf.h"
 
 #pragma once
 class NavBarWindow : public BaseWindow
@@ -11,6 +12,8 @@ class NavBarWindow : public BaseWindow
 	UINT appbarMessageId = -1;
 	FrameworkElement base = nullptr;
 	FrameworkElement child = nullptr;
+
+	winrt::Windows::UI::Core::CoreDispatcher xamlDispatcher = nullptr;
 
 public:
 	explicit NavBarWindow(const HINSTANCE hInstance) : BaseWindow(hInstance)
@@ -22,23 +25,23 @@ public:
 	void HandleRotation(const FrameworkElement& base, const FrameworkElement& child);
 	void SendHapticFeedback();
 	void SetupHaptics();
-	void SetupAppBar();
+	void SetupAppBar(bool istabletmode);
 
 private:
 	void OnDisplayChange() override
 	{
 		Configure();
 
-		//TODO: IF tablet mode huh
-		SetupAppBar();
+		if (Wnf::IsTabletMode())
+			SetupAppBar(true);
 	}
 	
 	void OnDpiChanged(const double& dpi) override
 	{
 		Configure();
 
-		//TODO: IF tablet mode huh
-		SetupAppBar();
+		if (Wnf::IsTabletMode())
+			SetupAppBar(true);
 	}
 
 	void Configure()

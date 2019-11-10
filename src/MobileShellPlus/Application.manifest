@@ -2,6 +2,19 @@
 <assembly
     xmlns="urn:schemas-microsoft-com:asm.v1"
     manifestVersion="1.0">
+  <assemblyIdentity
+    name="ADeltaX.MobileShell"
+    processorArchitecture="amd64"
+    version="5.1.0.0"
+    type="win32"/>
+  <description>MobileShell</description>
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+      <security>
+          <requestedPrivileges>
+              <requestedExecutionLevel level="asInvoker" uiAccess="false"/>
+          </requestedPrivileges>
+      </security>
+  </trustInfo>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
     <application>
       <maxversiontested Id="10.0.18362.0"/>

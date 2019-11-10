@@ -33,26 +33,34 @@ class BaseWindow
 
 public:
 	virtual ~BaseWindow() = default;
-	explicit BaseWindow(_In_ HINSTANCE, LPCWSTR str = L"DEF");
+	explicit BaseWindow(_In_ HINSTANCE, LPCWSTR str = L"DEF", ZBID zbid = ZBID_DEFAULT);
+	void PreBuild();
+	void Hide();
 	void Show();
 	void SetSize(int width, int height, double dpi);
 	void SetPosition(int x, int y);
+	
+	bool GetIsCreateWindowFailed() const
+	{
+		return isCreateWindowFailed;
+	}
 
 	//abstracts (for wndproc)
+	void OnThemeChanged();
 	virtual void OnDisplayChange() = 0;
 	virtual void OnDpiChanged(const double& dpi) = 0;
 
 private:
-	bool InitWindow(HINSTANCE, LPCWSTR str);
-	HWND CreateWindowInternal(const HINSTANCE hInstance, LPCWSTR str);
+	bool InitWindow(HINSTANCE, LPCWSTR str, ZBID zbid);
+	HWND CreateWindowInternal(const HINSTANCE hInstance, LPCWSTR str, ZBID zbid);
 	UIElement baseElement = nullptr;
+	
 	
 protected:
 	void SetXamlContent(const UIElement& element);
 	UIElement GetXamlContent();
 	virtual UIElement BuildUIElement();
-	DesktopWindowXamlSource _xamlSource;
-
+	DesktopWindowXamlSource _xamlSource;	
 	HWND hwndParent;
 	HWND hwndChild; //xamlhost
 	int monitorHeight = 0;
@@ -62,4 +70,5 @@ protected:
 	int x = 0;
 	int y = 0;
 	double effectiveDpi = 1;
+	bool isCreateWindowFailed = false;
 };

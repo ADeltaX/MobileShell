@@ -6,6 +6,13 @@ void Wnf::SubscribeWnf(ULONG64 state_name, decltype(WnfCallback) callback, intpt
 {
 	uint32_t buf1{};
 	size_t buf2{};
+	
+#ifdef _X86_
+	//Not really the best way btw
+	const auto hpath = LoadLibrary(L"ntdll.dll");
+	const auto RtlSubscribeWnfStateChangeNotification = (x86_RtlSubscribeWnfStateChangeNotification)(GetProcAddress(hpath, "RtlSubscribeWnfStateChangeNotification"));
+#endif // _X86_
+
 	NTSTATUS result = RtlSubscribeWnfStateChangeNotification(&buf2, state_name, buf1, WnfCallback, callback_param, 0, 0, 1);
 }
 

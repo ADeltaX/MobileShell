@@ -13,6 +13,7 @@ const ULONG64 WNF_WIFI_AVERAGE_TRANSMIT = 0x880073AA3BC6875;
 const ULONG64 WNF_CNET_WIFI_ACTIVITY = 0x1583002EA3BC8075;
 const ULONG64 WNF_CELL_SIGNAL_STRENGTH_BARS_CAN0 = 0xD8A0B2EA3BC1075;
 const ULONG64 WNF_CELL_SIGNAL_STRENGTH_BARS_CAN1 = 0xD8A0B2EA3BD1075;
+const ULONG64 WNF_IMSN_LAUNCHERVISIBILITY = 0xF950324A3BC1035;
 
 extern "C" {
 
@@ -24,6 +25,8 @@ extern "C" {
 
 	typedef ULONG WNF_CHANGE_STAMP, * PWNF_CHANGE_STAMP;
 
+#ifndef _X86_
+
 	NTSTATUS
 		RtlSubscribeWnfStateChangeNotification(
 			_Outptr_ VOID* Subscription,
@@ -34,6 +37,8 @@ extern "C" {
 			_In_opt_ PCWNF_TYPE_ID TypeId,
 			_In_opt_ ULONG SerializationGroup,
 			_In_opt_ ULONG Unknown);
+
+#endif // !_X86_
 
 	NTSTATUS NTAPI
 		RtlUnsubscribeWnfStateChangeNotification(decltype(WnfCallback));
@@ -57,6 +62,20 @@ extern "C" {
 			_In_ WNF_CHANGE_STAMP MatchingChangeStamp,
 			_In_ ULONG CheckStamp);
 }
+
+#ifdef _X86_
+
+typedef NTSTATUS(__stdcall *x86_RtlSubscribeWnfStateChangeNotification)
+(_Outptr_ VOID* Subscription,
+	_In_ ULONG64 StateName,
+	_In_ WNF_CHANGE_STAMP ChangeStamp,
+	_In_ decltype(WnfCallback) Callback,
+	_In_opt_ size_t CallbackContext,
+	_In_opt_ PCWNF_TYPE_ID TypeId,
+	_In_opt_ ULONG SerializationGroup,
+	_In_opt_ ULONG Unknown);
+
+#endif // _X86_
 
 enum FocusAssistStatus {
 	Off,

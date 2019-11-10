@@ -3,6 +3,7 @@
 #include <shellapi.h>
 #include "Utils.h"
 #include <ShellScalingApi.h>
+#include <Winuser.h>
 
 #pragma comment(lib, "shell32")
 
@@ -76,6 +77,16 @@ UINT Utils::RegisterAppBar(HWND hWnd, double width, double height, double dpi, i
 	return uCallback;
 }
 
+UINT Utils::UnregisterAppBar(HWND hWnd)
+{
+	APPBARDATA abd = { 0 };
+	abd.cbSize = sizeof(APPBARDATA);
+	abd.hWnd = hWnd;
+
+	SHAppBarMessage(ABM_REMOVE, &abd);
+	return -1;
+}
+
 void Utils::ABSetPos(HWND hWnd, double width, double height, double dpi, int abedge)
 {
 	APPBARDATA abd = {0};
@@ -127,16 +138,9 @@ void Utils::ABSetPos(HWND hWnd, double width, double height, double dpi, int abe
 	SHAppBarMessage(ABM_SETPOS, &abd);
 }
 
-void Utils::OpenTaskView()
+void Utils::ClickTaskView()
 {
 	//const auto hWnd_shell = FindWindow(L"Shell_TrayWnd", L"");
-	//const auto hWnd_task_view2 = FindWindowEx(hWnd_shell, nullptr, L"TrayButton", L"Task View2");
-	//if (hWnd_task_view2 != nullptr)
-	//{
-	//	SendMessage(hWnd_task_view2, WM_LBUTTONDOWN, 0, 0);
-	//	SendMessage(hWnd_task_view2, WM_LBUTTONUP, 0, 0);
-	//	return;
-	//}
 
 	//const auto hWnd_task_view = FindWindowEx(hWnd_shell, nullptr, L"TrayButton", L"Task View");
 	//if (hWnd_task_view != nullptr)
@@ -159,12 +163,59 @@ void Utils::OpenTaskView()
 	//ShellExecuteEx(&exec);
 }
 
+void Utils::ClickBack()
+{
+	/*const auto hWnd_shell = FindWindow(L"Shell_TrayWnd", L"");
+
+	const auto hWnd_back = FindWindowEx(hWnd_shell, nullptr, L"TrayButton", L"Back");
+	if (hWnd_back != nullptr)
+	{
+		SendMessage(hWnd_back, WM_LBUTTONDOWN, 0, 0);
+		SendMessage(hWnd_back, WM_LBUTTONUP, 0, 0);
+		return;
+	}*/
+
+	Utils::SendKeyStrokes(VK_LWIN, VK_BACK);
+}
+
+void Utils::ClickStartMenu()
+{
+	/*const auto hWnd_shell = FindWindow(L"Shell_TrayWnd", L"");
+
+	const auto hWnd_start = FindWindowEx(hWnd_shell, nullptr, L"Start", L"Start");
+	if (hWnd_start != nullptr)
+	{
+		SendMessage(hWnd_start, WM_LBUTTONDOWN, 0, 0);
+		SendMessage(hWnd_start, WM_LBUTTONUP, 0, 0);
+		return;
+	}*/
+
+	SendKeyStroke(VK_LWIN);
+}
+
+void Utils::ClickSearch()
+{
+	//const auto hWnd_shell = FindWindow(L"Shell_TrayWnd", L"");
+
+	//const auto hWnd_back = FindWindowEx(hWnd_shell, nullptr, L"TrayButton", L"Type here to search");
+	//if (hWnd_back != nullptr)
+	//{
+	//	SendMessage(hWnd_back, WM_LBUTTONDOWN, 0, 0);
+	//	SendMessage(hWnd_back, WM_LBUTTONUP, 0, 0);
+	//	return;
+	//}
+
+	Utils::SendKeyStrokes(VK_LWIN, 0x51); //KEY S
+}
+
 void Utils::RemoveWinGestures()
 {
 	const auto EdgeUiInputTopHwnd = FindWindow(L"EdgeUiInputTopWndClass", L"");
 	const auto EdgeUiInputHwnd = FindWindow(L"EdgeUiInputWndClass", L"");
-	SendMessage(EdgeUiInputTopHwnd, WM_CLOSE, 0, 0);
-	SendMessage(EdgeUiInputHwnd, WM_CLOSE, 0, 0);
+
+	//TEST
+	ShowWindow(EdgeUiInputTopHwnd, SW_HIDE);
+	ShowWindow(EdgeUiInputHwnd, SW_HIDE);
 }
 
 void Utils::SetWinTaskbarState(WinTaskbarState state)
@@ -175,22 +226,57 @@ void Utils::SetWinTaskbarState(WinTaskbarState state)
 
 	abd.lParam = state;
 	SHAppBarMessage(ABM_SETSTATE, &abd);
+
+	return;
+
+	//This currently doesn't work as UWP packaged.
+	HKEY hKey;
+
+	RegOpenKeyEx(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", 0, KEY_ALL_ACCESS, &hKey);
+	DWORD value = 0;
+
+	switch (state)
+	{
+	case AutoHide:
+		value = 1;
+		break;
+	case OnTop:
+		value = 0;
+		break;
+	default:
+		break;
+	}
+
+	RegSetValueEx(hKey, L"TaskbarAutoHideInTabletMode", 0, REG_DWORD, (const BYTE*)&value, sizeof(value));
+	RegCloseKey(hKey);
+
+	SendNotifyMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)L"TraySettings");
 }
 
-void Utils::SetWinTaskbarPos(int swp)
+void Utils::SetWinTaskbarVisible(bool visible)
 {
+	//Far better than simply hiding the window. This way will prevent unwanted and random "popups"
+
 	const auto taskbarHwnd = FindWindow(L"Shell_TrayWnd", L"");
-	SetWindowPos(taskbarHwnd, HWND_BOTTOM, 0, 0, 0, 0, swp | SWP_NOZORDER);
 	
-	SetWindowLong(taskbarHwnd, -20, GetWindowLong(taskbarHwnd, -20) | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_COMPOSITED);
-	SetLayeredWindowAttributes(taskbarHwnd, RGB(0, 0, 0), 0, LWA_ALPHA);
+	if (visible)
+	{
+		SetWindowLong(taskbarHwnd, GWL_EXSTYLE, GetWindowLong(taskbarHwnd, GWL_EXSTYLE) & ~(WS_EX_LAYERED | WS_EX_COMPOSITED));
+		SetLayeredWindowAttributes(taskbarHwnd, RGB(0, 0, 0), 255, LWA_ALPHA);
+	}
+	else
+	{
+		SetWindowLong(taskbarHwnd, GWL_EXSTYLE, GetWindowLong(taskbarHwnd, GWL_EXSTYLE) | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_COMPOSITED);
+		SetLayeredWindowAttributes(taskbarHwnd, RGB(0, 0, 0), 0, LWA_ALPHA);
+	}
+
 }
 
 void Utils::SetWinTaskbarPosition(WinTaskbarPosition pos)
 {
 	//Issue: this will change the taskbar position in ALL MONITORS
 	//I wasn't able to find how to change on primary taskbar only, unfortunately
-	//ALSO this makes the rotation a lot slower (because APPBAR slowness technology™)
+	//ALSO this makes the rotation a lot slower (because APPBAR & GDI slowness technology™)
 	//
 	//Should we enable this?
 
@@ -212,6 +298,8 @@ void Utils::SetWinTaskbarIcons(WinTaskbarIconSize size)
 
 void Utils::SetWinTaskbarSize(int area, int size)
 {
+	//TODO
+
 	HWND hTaskbarWnd = FindWindow(L"Shell_TrayWnd", NULL);
 	if (hTaskbarWnd)
 	{
@@ -226,6 +314,21 @@ void Utils::SetWinTaskbarSize(int area, int size)
 		SendMessage(hTaskbarWnd, WM_SIZING, WMSZ_LEFT, (LPARAM)&rc);
 		SetWindowPos(hTaskbarWnd, NULL, 0, 0, size, rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
 	}
+}
+
+void Utils::SetEdgeSwipeStatus(bool enabled)
+{
+	//Don't use this as it needs a logout........
+
+	HKEY hKey;
+
+	RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\Policies\\Microsoft\\Windows\\EdgeUI", 0, KEY_ALL_ACCESS, &hKey);
+	DWORD value = int(enabled);
+	RegSetValueEx(hKey, L"AllowEdgeSwipe", 0, REG_DWORD, (const BYTE*)&value, sizeof(value));
+
+	SendNotifyMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)L"TraySettings");
+	
+	RegCloseKey(hKey);
 }
 
 MONITORINFO Utils::GetMonitorInfoFromWindow(HWND hWnd)
@@ -265,4 +368,32 @@ DWORD Utils::GetCurrentOrientation()
 	EnumDisplaySettingsEx(NULL, ENUM_CURRENT_SETTINGS, &devmode, EDS_RAWMODE);
 
 	return devmode.dmDisplayOrientation;
+}
+
+bool Utils::SystemUsesLightTheme()
+{
+	unsigned long dwData = 0;
+	unsigned long cbData = sizeof(unsigned long);
+
+	HKEY hThemeKey;
+
+	long error = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", NULL, KEY_READ, &hThemeKey);
+	if (error == ERROR_SUCCESS)
+	{
+		long errKey = RegQueryValueEx(hThemeKey, L"SystemUsesLightTheme", 0, 0, LPBYTE(&dwData), &cbData);
+
+		if (error == ERROR_SUCCESS)
+		{
+			return (bool)dwData;
+		}
+		else
+		{
+			RegCloseKey(hThemeKey);
+			return true;
+		}
+	}
+	else
+	{
+		return true;
+	}
 }

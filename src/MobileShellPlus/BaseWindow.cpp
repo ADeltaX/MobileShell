@@ -4,11 +4,12 @@
 #include <windowsx.h>
 #include <ShellScalingApi.h>
 #include <tpcshrd.h>
-#include <commctrl.h>
 #include <winuser.h>
+#include "Utils.h"
 
 #pragma comment(lib, "SHCore")
 #pragma comment(lib, "shell32")
+#pragma comment(lib, "cfgmgr32")
 
 using namespace winrt;
 using namespace Windows::Foundation::Numerics;
@@ -22,19 +23,24 @@ using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Composition;
 using namespace Windows::UI;
 
-
 typedef HWND(WINAPI* CreateWindowInBand)(_In_ DWORD dwExStyle, _In_opt_ LPCWSTR lpClassName, _In_opt_ LPCWSTR lpWindowName, _In_ DWORD dwStyle, _In_ int X, _In_ int Y, _In_ int nWidth, _In_ int nHeight, _In_opt_ HWND hWndParent, _In_opt_ HMENU hMenu, _In_opt_ HINSTANCE hInstance, _In_opt_ LPVOID lpParam, DWORD band);
 typedef BOOL(WINAPI* SetWindowBand)(HWND hWnd, HWND hwndInsertAfter, DWORD dwBand);
 typedef BOOL(WINAPI* GetWindowBand)(HWND hWnd, PDWORD pdwBand);
 
-BaseWindow::BaseWindow(_In_ HINSTANCE hInstance, LPCWSTR str)
+BaseWindow::BaseWindow(_In_ HINSTANCE hInstance, LPCWSTR str, ZBID zbid)
 {
-	InitWindow(hInstance, str);
+	InitWindow(hInstance, str, zbid);
 }
 
-bool BaseWindow::InitWindow(HINSTANCE hInstance, LPCWSTR str)
+bool BaseWindow::InitWindow(HINSTANCE hInstance, LPCWSTR str, ZBID zbid)
 {
-	hwndChild = CreateWindowInternal(hInstance, str);
+	hwndChild = CreateWindowInternal(hInstance, str, zbid);
+
+	if (hwndChild == NULL)
+	{
+		isCreateWindowFailed = true;
+		return false;
+	}
 
 	SetWindowPos(hwndParent, nullptr, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOZORDER);
 	SetWindowPos(hwndChild, nullptr, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOZORDER);
@@ -69,12 +75,21 @@ void BaseWindow::SetPosition(int x, int y)
 	this->y = y;
 }
 
-void BaseWindow::Show()
+void BaseWindow::PreBuild()
 {
 	if (baseElement == nullptr)
 		SetXamlContent(BuildUIElement());
+}
 
-	ShowWindow(hwndParent, 5);
+void BaseWindow::Hide()
+{
+	ShowWindow(hwndParent, SW_HIDE);
+	UpdateWindow(hwndParent);
+}
+
+void BaseWindow::Show()
+{
+	ShowWindow(hwndParent, SW_SHOW);
 	UpdateWindow(hwndParent);
 }
 
@@ -112,15 +127,41 @@ LRESULT CALLBACK ParentWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
 			wthis->OnDisplayChange();
 		break;
 
-		//Workaround for startmenu/taskview:
+		//!!! WORKAROUND FOR STARTMENU/TASKVIEW FOCUS ISSUE
 	case WM_MOUSEACTIVATE:
 		return MA_NOACTIVATE;
 
+		//this is useless and not working
 	case WM_TABLET_QUERYSYSTEMGESTURESTATUS:
 		return TABLET_DISABLE_PRESSANDHOLD;
 		
 	case WM_RBUTTONDOWN:
 		return -1;
+		//!!! END OF WORKAROUND FOR STARTMENU/TASKVIEW FOCUS ISSUE
+
+
+		//!!! WORKAROUND FOR THEME NOT CHANGING AUTOMATICALLY
+	case WM_DWMCOLORIZATIONCOLORCHANGED:
+	case WM_DWMCOMPOSITIONCHANGED:
+	case WM_THEMECHANGED:
+		//uwu
+		if (wthis)
+			wthis->OnThemeChanged();
+		break;
+
+	case WM_SETTINGCHANGE:
+		if (lParam)
+		{
+			auto lParamString = reinterpret_cast<const wchar_t*>(lParam);
+			if (wcscmp(lParamString, L"ImmersiveColorSet") || wcscmp(lParamString, L"WindowsThemeElement"))
+			{
+				if (wthis)
+					wthis->OnThemeChanged();
+			}
+		}
+
+		break;
+		//!!! END OF WORKAROUND FOR THEME NOT CHANGING AUTOMATICALLY
 
 	case WM_DPICHANGED:
 		if (wthis)
@@ -136,7 +177,36 @@ LRESULT CALLBACK ParentWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lP
 	return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-HWND BaseWindow::CreateWindowInternal(HINSTANCE hInstance, LPCWSTR str)
+void BaseWindow::OnThemeChanged()
+{
+	auto xamlroot = GetXamlContent();
+
+	if (xamlroot != nullptr)
+	{
+		if (FrameworkElement g = xamlroot.as<FrameworkElement>())
+		{
+			if (Utils::SystemUsesLightTheme())
+				g.RequestedTheme(ElementTheme::Light);
+			else
+				g.RequestedTheme(ElementTheme::Dark);
+		}
+	}
+}
+
+BOOL CALLBACK Capra(HWND hwnd, LPARAM lParam)
+{
+	GESTURECONFIG config;
+	config.dwID = 0;
+	config.dwWant = GC_ALLGESTURES;
+	config.dwBlock = 0;
+	auto res = SetGestureConfig(hwnd, 0, 1, &config, sizeof(config));
+
+	RegisterTouchWindow(hwnd, TWF_WANTPALM);
+	
+	return true;
+}
+
+HWND BaseWindow::CreateWindowInternal(HINSTANCE hInstance, LPCWSTR str, ZBID zbid)
 {
 	auto lpszClassName = str;
 
@@ -156,8 +226,8 @@ HWND BaseWindow::CreateWindowInternal(HINSTANCE hInstance, LPCWSTR str)
 	if (!RegisterClass(&wndParentClass))
 	{
 		DWORD Error = GetLastError();
-		MessageBox(nullptr, TEXT("Error registering window class."), lpszClassName, MB_ICONERROR);
-		return nullptr;
+		//MessageBox(nullptr, TEXT("Error registering window class."), lpszClassName, MB_ICONERROR);
+		return NULL;
 	}
 
 	const auto hpath = LoadLibrary(L"user32.dll");
@@ -171,10 +241,12 @@ HWND BaseWindow::CreateWindowInternal(HINSTANCE hInstance, LPCWSTR str)
 		nullptr,
 		wndParentClass.hInstance,
 		this,
-		ZBID_DESKTOP);
+		zbid);
 
 	if (!hwndParent)
 	{
+		return NULL;
+		
 		const auto err = GetLastError();
 		const auto test1 = std::to_string(err);
 		MessageBoxA(hwndParent, test1.c_str(), "NO", 0);
@@ -198,11 +270,16 @@ HWND BaseWindow::CreateWindowInternal(HINSTANCE hInstance, LPCWSTR str)
 
 	GESTURECONFIG config;
 	config.dwID = 0;
-	config.dwWant = 0;
-	config.dwBlock = GC_ALLGESTURES;
+	config.dwWant = GC_ALLGESTURES;
+	config.dwBlock = 0;
 	auto res = SetGestureConfig(int_hw, 0, 1, &config, sizeof(config));
 	auto res1 = SetGestureConfig(hwndParent, 0, 1, &config, sizeof(config));
 
+	RegisterTouchWindow(int_hw, TWF_WANTPALM);
+	RegisterTouchWindow(hwndParent, TWF_WANTPALM);
+
+	EnumChildWindows(int_hw, Capra, NULL);
+	EnumChildWindows(hwndParent, Capra, NULL);
 	
 	//workaround for "white rectangle" touch
 	//ToDo: sub-classing will cause an epic crash. Find another workaround.

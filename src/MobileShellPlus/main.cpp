@@ -15,6 +15,10 @@
 #include <iostream>
 #include <thread>
 #include "NotificationWindow.h"
+#include "dxgi.h"
+#include "dxgi1_6.h"
+
+#pragma comment(lib, "dxgi.lib")
 
 using namespace winrt;
 using namespace Windows::Foundation;
@@ -38,44 +42,43 @@ void SetupPowerManager();
 void SetupRadios();
 void SetRadioStatus(Radio radio);
 void MoveNotificationsOnTop();
+void OnTabletModeChanged(bool istabletmode);
+void GlobalSetupAppBar();
+void ForceFullCoverStartScreen();
 
 
-#pragma bss_seg(".imrsiv")
-[[maybe_unused]] static int MsftWatermark;
-
-int main()
-{
-	//Sleep(2000000);
-
-	return 0;
-}
+// .imrsiv also REQUIRES IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY, MEANING IT SHOULD BE SIGNED (also, Windows certificate) --> no window(s) on other ZBIDs
+// Or we can cheat by launching a new (suspended) RuntimeBroker process and then inject a dll
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
 	//Useful to change on-the-fly dpi
 	//SystemParametersInfo(SPI_SETLOGICALDPIOVERRIDE, 0, LPVOID(nullptr), 1);
 
-	MsftWatermark = 0;
-	
+	const auto m_singleInstanceMutex = CreateMutex(NULL, TRUE, L"MobileShellPlus");
+
+	if (m_singleInstanceMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS) {
+		MessageBox(NULL, L"MobileShell is already open, switch to tablet mode to see it!", L"uWu", 0);
+		return 0;
+	}
+
+	DXGIDeclareAdapterRemovalSupport();
+	auto res = SetProcessShutdownParameters(1, SHUTDOWN_NORETRY);
+
 	init_apartment();
 
 	auto windows_xaml_manager = WindowsXamlManager::InitializeForCurrentThread();
 
-	MSG msg;
-
 	wind = new NavBarWindow(hInstance);
 	statusBarW = new StatusBarWindow(hInstance);
 
-	statusBarW->Show();
-	wind->Show();
+	statusBarW->PreBuild();
+	wind->PreBuild();
 
-	Utils::RemoveWinGestures();
-	Utils::SetWinTaskbarState(AutoHide);
-	Utils::SetWinTaskbarPos(SWP_HIDEWINDOW);
+	if (Wnf::IsTabletMode())
+		OnTabletModeChanged(true);
 
-	statusBarW->SetupAppBar();
-	wind->SetupAppBar();
-
+	Wnf::SubscribeWnf(WNF_TMCN_ISTABLETMODE, WnfCallback, NULL);
 	Wnf::SubscribeWnf(WNF_SHEL_NOTIFICATIONS, WnfCallback, NULL);
 	Wnf::SubscribeWnf(WNF_SHEL_QUIETHOURS_ACTIVE_PROFILE_CHANGED, WnfCallback, NULL);
 	Wnf::SubscribeWnf(WNF_CELL_SIGNAL_STRENGTH_BARS_CAN0, WnfCallback, NULL);
@@ -90,7 +93,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	
 	std::thread TA(MoveNotificationsOnTop);
 	std::thread TWifi(GetWifiSignal);
+	std::thread TCapra(GlobalSetupAppBar);
 
+	MSG msg;
 	while (GetMessage(&msg, nullptr, 0, 0))
 	{
 		TranslateMessage(&msg);
@@ -98,6 +103,32 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	}
 
 	return int(msg.wParam);
+}
+
+void GlobalSetupAppBar()
+{
+	while (true)
+	{
+		if (Wnf::IsTabletMode())
+		{
+			OnTabletModeChanged(true);
+			//ForceFullCoverStartScreen();
+		}
+
+		Sleep(5000);
+	}
+}
+
+void ForceFullCoverStartScreen()
+{
+	RECT rect = { 0 };
+	SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
+
+	const auto hwnd = FindWindowEx(nullptr, nullptr, L"Windows.UI.Core.CoreWindow", L"Start");
+	if (hwnd)
+	{
+		SetWindowPos(hwnd, nullptr, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_NOSENDCHANGING);
+	}
 }
 
 void HandlePhoneLines(std::vector<PhoneLine> phone_lines)
@@ -223,7 +254,7 @@ void MoveNotificationsOnTop()
 			SetWindowPos(hwnd, nullptr, ((double(mon_width) - notification_width) / 2.0), -70 * mon_dpi + 24.0 * mon_dpi, 0, 0, SWP_NOSIZE);
 		}
 
-		Sleep(1);
+		Sleep(10);
 	}
 }
 
@@ -333,13 +364,47 @@ void GetWifiSignal()
 	}
 }
 
+void OnTabletModeChanged(bool istabletmode)
+{
+	if (istabletmode)
+	{
+		//Utils::RemoveWinGestures();
+		//Utils::SetWinTaskbarIcons(WinTaskbarIconSize::TSB_SMALL);
+		Utils::SetWinTaskbarState(WinTaskbarState::AutoHide);
+		Utils::SetWinTaskbarVisible(false);
+
+		statusBarW->SetupAppBar(true);
+		wind->SetupAppBar(true);
+
+		statusBarW->Show();
+		wind->Show();
+	}
+	else
+	{
+		//Utils::SetWinTaskbarIcons(WinTaskbarIconSize::TSB_NORMAL);
+		Utils::SetWinTaskbarState(WinTaskbarState::OnTop);
+		Utils::SetWinTaskbarVisible(true);
+
+		statusBarW->SetupAppBar(false);
+		wind->SetupAppBar(false);
+
+		statusBarW->Hide();
+		wind->Hide();
+	}	
+}
+
 NTSTATUS NTAPI WnfCallback(const ULONG64 state_name, void* p2, void* p3, void* callbackContext, void* buffer, ULONG bufferSize)
 {
 	const auto p = static_cast<byte*>(buffer);
 	std::vector<unsigned char> wnf_state_buffer(bufferSize);
 	memcpy(wnf_state_buffer.data(), p, bufferSize);
 
-	if (state_name == WNF_SHEL_NOTIFICATIONS)
+	if (state_name == WNF_TMCN_ISTABLETMODE)
+	{
+		const auto is_tablet_mode = Wnf::ToBool(wnf_state_buffer.data());
+		OnTabletModeChanged(is_tablet_mode);
+	}
+	else if (state_name == WNF_SHEL_NOTIFICATIONS)
 	{
 		const auto num_notif = Wnf::ToInt32(wnf_state_buffer.data());
 		statusBarW->SetNotifications(num_notif);

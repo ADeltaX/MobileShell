@@ -13,6 +13,8 @@ class StatusBarWindow : public BaseWindow
 	FrameworkElement base = nullptr;
 	FrameworkElement child = nullptr;
 
+	winrt::Windows::UI::Core::CoreDispatcher xamlDispatcher = nullptr;
+
 public:
 	explicit StatusBarWindow(const HINSTANCE hInstance) : BaseWindow(hInstance, L"StatusBar")
 	{
@@ -35,7 +37,7 @@ public:
 	void SetDualSim();
 	void SetSim1Signal(unsigned char value);
 	void SetSim2Signal(unsigned char value);
-	void SetupAppBar();
+	void SetupAppBar(bool istabletmode);
 	winrt::hstring GetBatteryStatusGlyph(int current_battery, bool charging, bool energy_saving_mode);
 
 private:
@@ -43,16 +45,16 @@ private:
 	{
 		Configure();
 
-		//TODO: IF tablet mode huh
-		SetupAppBar();
+		if (Wnf::IsTabletMode())
+			SetupAppBar(true);
 	}
 
 	void OnDpiChanged(const double& dpi) override
 	{
 		Configure();
 
-		//TODO: IF tablet mode huh
-		SetupAppBar();
+		if (Wnf::IsTabletMode())
+			SetupAppBar(true);
 	}
 
 	void Configure()

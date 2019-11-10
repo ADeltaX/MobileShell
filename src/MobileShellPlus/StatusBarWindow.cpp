@@ -1,11 +1,8 @@
 #include "pch.h"
 #include "StatusBarWindow.h"
 #include "Utils.h"
-#include "Wnf.h"
 #include "winrt/Windows.System.Power.h"
-#include <iomanip>
 #include <ctime>
-#include <sstream>
 
 using namespace winrt;
 using namespace Windows::Foundation;
@@ -49,8 +46,6 @@ FontIcon sim2Back = nullptr;
 bool isDualSim = false;
 bool isAirplaneMode = false;
 
-winrt::Windows::UI::Core::CoreDispatcher xamlDispatcher(nullptr);
-
 constexpr auto BATTERY_NOT_PRESENT_GLYPH = L"\uEC02";
 
 
@@ -58,12 +53,13 @@ UIElement StatusBarWindow::BuildUIElement()
 {
 	Grid wrp;
 	
-	Grid xaml_container;
+	const Grid xaml_container;
 
 	const hstring xaml(LR"(<Grid
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	Background="{ThemeResource SystemAltHighColor}">
     <Grid.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
@@ -202,14 +198,13 @@ UIElement StatusBarWindow::BuildUIElement()
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Column="2">
-            <TextBlock x:Name="batteryPercentage" FontSize="10" Text="5%" VerticalAlignment="Center" Visibility="Visible" TextAlignment="Center" Margin="0,0,0,2" Rotation="0" CenterPoint="9.5,6.5,0" />
+            <TextBlock x:Name="batteryPercentage" FontSize="10" Text="5%" VerticalAlignment="Center" Visibility="Visible" TextAlignment="Center" Margin="0,0,3,2" Rotation="0" CenterPoint="9.5,6.5,0" />
 
             <FontIcon x:Name="batteryGlyph" Glyph="&#xEC02;" Margin="4,0" Rotation="0" CenterPoint="12,8,0" />
 
             <TextBlock Margin="3,0,3,2" x:Name="clockTextBox" FontSize="13" Text="05:05" VerticalAlignment="Center" TextAlignment="Center" Rotation="0" CenterPoint="14,8.5,0" />
         </StackPanel>
-
-        <Grid x:Name="Action Center" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" />
+        <Button x:Name="actionCenter" Grid.ColumnSpan="3" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource TextBlockButtonStyle}" />
     </Grid>
 </Grid>)");
 
@@ -221,23 +216,39 @@ UIElement StatusBarWindow::BuildUIElement()
 
 	//Performance issue, need to investigate
 	TimeSpan dur(20000000L);
+
+	//DON'T
+
+	SYSTEMTIME tB;
+	wchar_t bufferB[512];
+
+	GetLocalTime(&tB);
+	auto result = GetTimeFormat(LOCALE_USER_DEFAULT,
+		0,
+		&tB,
+		L"hh:mm",
+		(LPTSTR)bufferB,
+		sizeof(bufferB));
+
+	clockTextBox.Text(hstring(bufferB));
+	
 	
 	DispatcherTimer dispClock;
 	dispClock.Interval(dur);
 	dispClock.Tick([=](IInspectable const&, IInspectable const&)
-	{
-		auto t = std::time(nullptr);
-		auto tm = *std::localtime(&t);
-
-		std::ostringstream oss;
-		oss << std::put_time(&tm, "%H:%M");
-		auto str = oss.str();
-
-		//now fake it - no failures assured /s
-		const auto wstr = std::wstring(str.begin(), str.end());
-		auto result = wstr.c_str();
+	{	
+		SYSTEMTIME t;
+		wchar_t buffer[512];
 		
-		clockTextBox.Text(hstring(wstr));
+		GetLocalTime(&t);
+		auto result = GetTimeFormat(LOCALE_USER_DEFAULT,
+			0,
+			&t,
+			L"hh:mm",
+			(LPTSTR)buffer,
+			sizeof(buffer));
+		
+		clockTextBox.Text(hstring(buffer));
 	});
 
 	dispClock.Start();
@@ -312,6 +323,18 @@ UIElement StatusBarWindow::BuildUIElement()
 #pragma region Roaming
 
 	roamingGrid = ins.FindName(L"roamingGrid").as<Grid>();
+
+#pragma endregion
+
+#pragma region Action Center
+
+	const auto actionCenter = ins.FindName(L"actionCenter").as<Button>();
+
+	const auto actionCenter_click = [this](IInspectable const&, RoutedEventArgs const&)
+	{
+		Utils::SendKeyStrokes(VK_LWIN, 0x41); //LETTER A
+	};
+	actionCenter.Click(actionCenter_click);
 
 #pragma endregion
 
@@ -908,31 +931,42 @@ void StatusBarWindow::UpdateSim2(Windows::ApplicationModel::Calls::PhoneLine pho
 		}));
 }
 
-void StatusBarWindow::SetupAppBar()
+void StatusBarWindow::SetupAppBar(bool istabletmode)
 {
 	const auto orientation = Utils::GetCurrentOrientation();
 
-	if (orientation == DMDO_DEFAULT || orientation == DMDO_180)
+	if (istabletmode)
 	{
-		if (appbarMessageId != -1u)
-			Utils::ABSetPos(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_TOP);
-		else
-			appbarMessageId = Utils::RegisterAppBar(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_TOP);
-	}
-	else if (orientation == DMDO_90)
-	{
-		if (appbarMessageId != -1u)
-			Utils::ABSetPos(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
-		else
-			appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
-	}
-	else if (orientation == DMDO_270)
-	{
-		if (appbarMessageId != -1u)
-			Utils::ABSetPos(hwndParent, width, height, effectiveDpi, ABE_LEFT);
-		else
-			appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_LEFT);
-	}
+		if (orientation == DMDO_DEFAULT || orientation == DMDO_180)
+		{
+			if (appbarMessageId != -1u)
+				Utils::ABSetPos(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_TOP);
+			else
+				appbarMessageId = Utils::RegisterAppBar(hwndParent, width * effectiveDpi, height, effectiveDpi, ABE_TOP);
+		}
+		else if (orientation == DMDO_90)
+		{
+			if (appbarMessageId != -1u)
+				Utils::ABSetPos(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
+			else
+				appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_RIGHT);
+		}
+		else if (orientation == DMDO_270)
+		{
+			if (appbarMessageId != -1u)
+				Utils::ABSetPos(hwndParent, width, height, effectiveDpi, ABE_LEFT);
+			else
+				appbarMessageId = Utils::RegisterAppBar(hwndParent, width, height, effectiveDpi, ABE_LEFT);
+		}
 
-	HandleRotation(base, child);
+		xamlDispatcher.RunAsync(winrt::Windows::UI::Core::CoreDispatcherPriority::Normal, Windows::UI::Core::DispatchedHandler([=]()
+			{
+				HandleRotation(base, child);
+			}));
+
+	}
+	else
+	{
+		appbarMessageId = Utils::UnregisterAppBar(hwndParent);
+	}
 }
