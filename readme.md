@@ -1,6 +1,6 @@
 # MobileShell - A custom shell for Windows 10 Desktop/ARM64 (18362+)
-# Currently on hold (for now)
-# Made using C++ and Xaml Island
+This project is currently on hold (for now)
+<p>Made using C++ and Xaml Island</p>
 
 ### Running on a PC:
 ![pcMobileShell](demo/PC.png "MobileShell running on a PC")
